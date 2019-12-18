@@ -1,0 +1,31 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+requests = "*"
+attrs = "*"
+certifi = "*"
+chardet = "*"
+idna = "*"
+jsonschema = "*"
+more-itertools = "*"
+pluggy = "*"
+py = "*"
+pyparsing = "*"
+pyrsistent = "*"
+pytest = "*"
+pytest-env = "*"
+pytest-html = "*"
+pytest-metadata = "*"
+selenium = "*"
+six = "*"
+tqdm = "*"
+urllib3 = "*"
+wcwidth = "*"
+
+[requires]
+python_version = "3.8"
