@@ -15,3 +15,6 @@ Python 3.8+
 
 ### Run your tests with local Python
 `pipenv run pytest -c stage_pytest.ini -s` – with config `stage_pytest.ini` and show `print` logs 
+
+## Docker
+Create docker image from Dockerfile https://github.com/sakharovmaksim/acceptance-tests-base-docker-image-python or pull from https://hub.docker.com/repository/docker/sakharovmaksim/acceptance-tests-base-image-python
