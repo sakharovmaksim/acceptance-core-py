@@ -16,8 +16,8 @@ Python 3.8+
 ### Run your tests with local Python
 `pipenv run pytest -c stage_pytest.ini -s` – with config `stage_pytest.ini` and show `print` logs 
 
-### Run your tests with multithread and with local Python 
-`pipenv run pytest -n 2 -c stage_pytest.ini -s` - option -n X, number of threads count
+### Run your tests with parallel mode
+Change in *.ini-file `addopts = -nX` option for desired count of parallel tests
 
 ## Docker
 Create docker image from Dockerfile https://github.com/sakharovmaksim/acceptance-tests-base-docker-image-python or pull from https://hub.docker.com/repository/docker/sakharovmaksim/acceptance-tests-base-image-python

@@ -23,7 +23,7 @@ docker run -di --net=host --name=$CONTAINER_NAME -v $pwd:/local_project $TAG
 docker exec $CONTAINER_NAME rsync -a /local_project/. /acceptance-tests-core-dir/ --exclude output --exclude tmp --exclude .git
 
 # Запуск тестов из папки, в которой предустановлен Python с дополнениями. Установлена опция --html формирования HTML-отчета (можно выключить)
-docker exec $CONTAINER_NAME pipenv run pytest /acceptance-tests-core-dir/ -s --html=/acceptance-tests-core-dir/output/report.html --self-contained-html \
+docker exec $CONTAINER_NAME pipenv run pytest /acceptance-tests-core-dir/ --html=/acceptance-tests-core-dir/output/report.html --self-contained-html \
     -c /acceptance-tests-core-dir/$1
 
 # Копируем репорты от тестов обратно в --volume-папку local_project
