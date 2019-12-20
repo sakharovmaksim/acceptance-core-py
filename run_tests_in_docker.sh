@@ -17,17 +17,11 @@ trap 'docker rm -f $CONTAINER_NAME' 2 15
 
 docker pull $TAG
 
-docker run -di --net=host --name=$CONTAINER_NAME -v $pwd:/local_project $TAG
+docker run -di --net=host --name=$CONTAINER_NAME -v $pwd:/acceptance-tests-core-dir $TAG
 
-# Копируем код тестов из --volume папки в папку с предустановленным vendor, чтобы не требовать vendor на хосте
-docker exec $CONTAINER_NAME rsync -a /local_project/. /acceptance-tests-core-dir/ --exclude output --exclude tmp --exclude .git
-
-# Запуск тестов из папки, в которой предустановлен Python с дополнениями. Установлена опция --html формирования HTML-отчета (можно выключить)
+# Запуск тестов из папки, в которой предустановлены модули Python. Установлена опция --html формирования HTML-отчета (можно выключить)
 docker exec $CONTAINER_NAME pipenv run pytest /acceptance-tests-core-dir/ --html=/acceptance-tests-core-dir/output/report.html --self-contained-html \
     -c /acceptance-tests-core-dir/$1
-
-# Копируем репорты от тестов обратно в --volume-папку local_project
-docker exec $CONTAINER_NAME rsync -a /acceptance-tests-core-dir/output/ /local_project/output/
 
 echo "Останавливается и удаляется docker-контейнер $CONTAINER_NAME"
 docker rm -f $CONTAINER_NAME
