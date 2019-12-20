@@ -1,16 +1,34 @@
-from acceptance_core_py.core.web_driver import WD
+import time
+
+from acceptance_core_py.core import driver_actions
+from acceptance_core_py.core.test_case import TestCase
 
 
-class TestClass:
-    driver = object
+class TestClass(TestCase):
+    def test_simple_test_1(self):
+        driver_actions.open_relative_url("")
+        time.sleep(3)
 
-    def setup(self):
-        print("Creating WebDriver...")
-        self.driver = WD().create_web_driver()
+    def test_simple_test_2(self):
+        driver_actions.open_relative_url("")
+        time.sleep(3)
 
-    def teardown(self):
-        print("Quit WebDriver. Bye-bye")
-        self.driver.quit()
+    def test_simple_test_3(self):
+        driver_actions.open_relative_url("")
+        time.sleep(3)
 
-    def test_simple_test(self):
-        self.driver.open_relative_url("")
+    def test_simple_test_4(self):
+        driver_actions.open_relative_url("")
+        time.sleep(3)
+
+    def test_simple_test_5(self):
+        driver_actions.open_relative_url("")
+        time.sleep(3)
+
+    def test_simple_test_6(self):
+        driver_actions.open_relative_url("")
+        time.sleep(3)
+
+    def test_simple_test_7(self):
+        driver_actions.open_relative_url("")
+        time.sleep(3)
