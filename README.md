@@ -19,5 +19,7 @@ Python 3.8+
 ### Run your tests with parallel mode
 Change in *.ini-file `addopts = -nX` option for desired count of parallel tests
 
+![Sample of parallel tests execution](images/parallel_tests.png)
+
 ## Docker
 Create docker image from Dockerfile https://github.com/sakharovmaksim/acceptance-tests-base-docker-image-python or pull from https://hub.docker.com/repository/docker/sakharovmaksim/acceptance-tests-base-image-python
