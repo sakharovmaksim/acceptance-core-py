@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 
+import logging
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
@@ -11,7 +12,12 @@ instance = None
 
 def initialize():
     global instance
-    print("\nCreating WebDriver instance")
+
+    command_executor_url = os.environ["GGR_PLAYBACK_HOST"]
+    if not command_executor_url:
+        raise Exception("Do not set GGR_PLAYBACK_HOST in config-file! Set it, please!")
+
+    logging.info("Creating WebDriver Remote instance by " + command_executor_url)
 
     capabilities = DesiredCapabilities.CHROME.copy()
     capabilities['enableVNC'] = True
@@ -34,6 +40,7 @@ def initialize():
 
     # TODO Make auto-detect needless mobile emulation
     if os.environ["MOBILE_EMULATION"] != "False":
+        logging.info("Enabling mobile emulation mode")
         chrome_options.add_experimental_option(
             "mobileEmulation",
             {
@@ -45,24 +52,19 @@ def initialize():
                 "userAgent": "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36"
             })
 
-    command_executor = os.environ["GGR_PLAYBACK_HOST"]
-    if not command_executor:
-        raise Exception("Do not set GGR_PLAYBACK_HOST in config-file! Set it, please!")
-
-    instance = webdriver.Remote(
-        command_executor=command_executor,
-        desired_capabilities=capabilities,
-        options=chrome_options
-    )
-    instance.implicitly_wait(5)
-
-    if instance is None:
-        raise Exception("Could not create WebDriver Remote instance! Test could not started")
+    try:
+        instance = webdriver.Remote(
+            command_executor=command_executor_url,
+            desired_capabilities=capabilities,
+            options=chrome_options
+        )
+    except Exception:
+        raise Exception("Could not create WebDriver Remote instance by " + command_executor_url + ". Test cannot start")
 
     return instance
 
 
 def close_driver():
     global instance
-    print("Quit WebDriver. Bye-bye")
+    logging.info("Quit WebDriver. Bye-bye")
     instance.quit()
