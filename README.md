@@ -28,5 +28,5 @@ Create docker image from Dockerfile https://github.com/sakharovmaksim/acceptance
 Add "--html=\`pwd\`/output/report.html --self-contained-html" to pytest-command to generate HTML-report in .../output/ directory
 Default for docker-script
 
-![Sample of HTML-report](images/report.png)
+![Sample of HTML-report](images/report_new.png)
 
