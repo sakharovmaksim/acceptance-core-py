@@ -7,6 +7,8 @@ from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
 
+from acceptance_core_py.core.exception.at_exception import ATException
+
 instance = None
 
 
@@ -15,7 +17,7 @@ def initialize():
 
     command_executor_url = os.environ["GGR_PLAYBACK_HOST"]
     if not command_executor_url:
-        raise Exception("Do not set GGR_PLAYBACK_HOST in config-file! Set it, please!")
+        raise ATException("Do not set GGR_PLAYBACK_HOST in config-file! Set it, please!")
 
     logging.info("Creating WebDriver Remote instance by " + command_executor_url)
 
@@ -59,7 +61,7 @@ def initialize():
             options=chrome_options
         )
     except Exception:
-        raise Exception("Could not create WebDriver Remote instance by " + command_executor_url + ". Test cannot start")
+        raise ATException("Could not create WebDriver Remote instance by " + command_executor_url + ". Test cannot start")
 
     return instance
 
