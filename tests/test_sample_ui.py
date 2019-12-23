@@ -1,34 +1,39 @@
-import time
-
-from acceptance_core_py.core import driver_actions
 from acceptance_core_py.core.test_case import TestCase
+from content.openers.main.main_page_opener import MainPageOpener
 
 
 class TestClass(TestCase):
     def test_simple_test_1(self):
-        driver_actions.open_relative_url("")
-        time.sleep(3)
+        main_page = MainPageOpener().open_main_page()
+        title_text = main_page.get_title_block().get_title_text()
+        assert title_text != "", "Title can't be empty!"
 
     def test_simple_test_2(self):
-        driver_actions.open_relative_url("")
-        time.sleep(3)
+        main_page = MainPageOpener().open_main_page()
+        title_text = main_page.get_title_block().get_title_text()
+        assert title_text != "", "Title can't be empty!"
 
     def test_simple_test_3(self):
-        driver_actions.open_relative_url("")
-        time.sleep(3)
+        main_page = MainPageOpener().open_main_page()
+        title_text = main_page.get_title_block().get_title_text()
+        assert title_text != "", "Title can't be empty!"
 
     def test_simple_test_4(self):
-        driver_actions.open_relative_url("")
-        time.sleep(3)
+        main_page = MainPageOpener().open_main_page()
+        title_text = main_page.get_title_block().get_title_text()
+        assert title_text != "", "Title can't be empty!"
 
     def test_simple_test_5(self):
-        driver_actions.open_relative_url("")
-        time.sleep(3)
+        main_page = MainPageOpener().open_main_page()
+        title_text = main_page.get_title_block().get_title_text()
+        assert title_text != "", "Title can't be empty!"
 
     def test_simple_test_6(self):
-        driver_actions.open_relative_url("")
-        time.sleep(3)
+        main_page = MainPageOpener().open_main_page()
+        title_text = main_page.get_title_block().get_title_text()
+        assert title_text != "", "Title can't be empty!"
 
     def test_simple_test_7(self):
-        driver_actions.open_relative_url("")
-        time.sleep(3)
+        main_page = MainPageOpener().open_main_page()
+        title_text = main_page.get_title_block().get_title_text()
+        assert title_text != "", "Title can't be empty!"

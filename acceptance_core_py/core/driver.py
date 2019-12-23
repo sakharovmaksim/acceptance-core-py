@@ -6,13 +6,15 @@ import logging
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.remote.webdriver import WebDriver
 
 from acceptance_core_py.core.exception.at_exception import ATException
+from acceptance_core_py.helpers import env
 
-instance = None
+instance: WebDriver
 
 
-def initialize():
+def initialize() -> WebDriver:
     global instance
 
     command_executor_url = os.environ["GGR_PLAYBACK_HOST"]
@@ -41,7 +43,7 @@ def initialize():
     chrome_options.add_argument("--disable-notifications")
 
     # TODO Make auto-detect needless mobile emulation
-    if os.environ["MOBILE_EMULATION"] != "False":
+    if env.is_enable_mobile_emulation_mode():
         logging.info("Enabling mobile emulation mode")
         chrome_options.add_experimental_option(
             "mobileEmulation",
