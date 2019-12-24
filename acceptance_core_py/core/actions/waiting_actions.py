@@ -35,7 +35,7 @@ def wait_for_element_exists(selector: str, message: str = None, timeout: int = N
         message = f"Element with selector '{selector}' did not exists for {timeout} seconds"
 
     logging.info(f"Waiting for existing element with selector '{selector}' for {timeout} seconds")
-    return ui.WebDriverWait(driver.instance, timeout).until(
+    ui.WebDriverWait(driver.instance, timeout).until(
         expected_conditions.presence_of_element_located((By.CSS_SELECTOR, selector)), message)
 
 
@@ -45,7 +45,7 @@ def wait_for_element_clickable(selector: str, message: str = None, timeout: int 
         message = f"Element with selector '{selector}' did not become clickable for {timeout} seconds"
 
     logging.info(f"Waiting element with selector '{selector}' being clickable for {timeout} seconds")
-    return ui.WebDriverWait(driver.instance, timeout).until(
+    ui.WebDriverWait(driver.instance, timeout).until(
         expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, selector)), message)
 
 
@@ -55,8 +55,37 @@ def wait_for_element_visible(selector: str, message: str = None, timeout: int = 
         message = f"Element with selector '{selector}' did not become visible for {timeout} seconds"
 
     logging.info(f"Waiting for visibility element with selector '{selector}' for {timeout} seconds")
-    return ui.WebDriverWait(driver.instance, timeout).until(
+    ui.WebDriverWait(driver.instance, timeout).until(
         expected_conditions.visibility_of_element_located((By.CSS_SELECTOR, selector)), message)
+
+
+def wait_for_element_not_visible(selector: str, message: str = None, timeout: int = None):
+    timeout = get_waiting_timeout_from_env_if_necessary(timeout)
+    if message is None:
+        message = f"Element with selector '{selector}' did not become invisible for {timeout} seconds"
+
+    logging.info(f"Waiting for invisibility element with selector '{selector}' for {timeout} seconds")
+    ui.WebDriverWait(driver.instance, timeout).until(
+        expected_conditions.invisibility_of_element_located((By.CSS_SELECTOR, selector)), message)
+
+
+def wait_for_ajax(timeout: int = None):
+    timeout = get_waiting_timeout_from_env_if_necessary(timeout)
+    try:
+        logging.info(f"Waiting for complete all ajax-requests for {timeout} seconds")
+        wait_for_js("return $.active == 0;", timeout)
+    except Exception:
+        logging.info(f"Could not wait for completion of all AJAX requests during timeout of {timeout} seconds")
+
+
+def wait_for_js(js: str, timeout: int = None):
+    timeout = get_waiting_timeout_from_env_if_necessary(timeout)
+
+    def condition(js_script):
+        driver_actions.execute_js(js_script)
+
+    logging.info(f"Waiting for the JS-script return true for {timeout} seconds")
+    ui.WebDriverWait(driver.instance, timeout).until(condition(js))
 
 
 def get_waiting_timeout_from_env_if_necessary(timeout: int = None):

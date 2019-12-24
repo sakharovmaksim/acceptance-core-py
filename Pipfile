@@ -28,6 +28,8 @@ urllib3 = "*"
 wcwidth = "*"
 pytest-xdist = "*"
 allure-pytest = "*"
+tldextract = "*"
+python-dateutil = "*"
 
 [requires]
 python_version = "3.8"

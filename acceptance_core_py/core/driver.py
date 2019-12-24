@@ -42,7 +42,6 @@ def initialize() -> WebDriver:
     chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--disable-notifications")
 
-    # TODO Make auto-detect needless mobile emulation
     if env.is_enable_mobile_emulation_mode():
         logging.info("Enabling mobile emulation mode")
         chrome_options.add_experimental_option(

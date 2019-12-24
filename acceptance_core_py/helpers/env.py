@@ -1,3 +1,4 @@
+import logging
 import os
 
 
@@ -6,6 +7,7 @@ def get_base_url() -> str:
     if not base_url:
         raise Exception("Could not get value for variable HOST_URL from ENV")
 
+    logging.info(f"Got base URL from ENV: '{base_url}'")
     return base_url
 
 
