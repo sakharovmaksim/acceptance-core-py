@@ -1,10 +1,13 @@
 import logging
+
+import time
 import tldextract
 from typing import List
 
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver import TouchActions
+from selenium.webdriver import TouchActions, ActionChains
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.select import Select
 
 from acceptance_core_py.core import driver
 from acceptance_core_py.core.actions import waiting_actions
@@ -18,7 +21,7 @@ from acceptance_core_py.helpers.utils import strings_utils
 def click(selector: str):
     if env.is_enable_mobile_emulation_mode():
         logging.info(f"Native tap on element with selector '{selector}'")
-        TouchActions(driver.instance).tap(locate_element(selector))
+        TouchActions(driver.instance).tap(locate_element(selector)).perform()
     else:
         logging.info(f"Native click on element with selector '{selector}'")
         locate_element(selector).click()
@@ -28,6 +31,17 @@ def click_by_html(selector: str):
     logging.info(f"Click on element with selector '{selector}' by HTML")
     execute_js(get_dom_object(selector, "click()"))
     waiting_actions.wait_for_load()
+
+
+# TODO Need to test this method
+def double_click(selector: str):
+    element = locate_element(selector)
+    if env.is_enable_mobile_emulation_mode():
+        logging.info(f"Double tap on element with selector '{selector}'")
+        TouchActions(driver.instance).double_tap(element).perform()
+    else:
+        logging.info(f"Double click on element with selector '{selector}'")
+        ActionChains(driver.instance).double_click(element).perform()
 
 
 # Openers methods
@@ -42,6 +56,7 @@ def open_relative_url(relative_url: str = ""):
 def open_direct_url(url: str):
     logging.info(f"Opening direct URL '{url}'")
     driver.instance.get(url)
+    waiting_actions.wait_for_load()
 
 
 # Grabber methods
@@ -74,16 +89,55 @@ def grab_text_from_hidden_elements(selector: str) -> List:
     return result
 
 
-# Checking anything methods
+# TODO Need to test this method
+def grab_value_from_element(selector: str) -> str:
+    element = locate_element(selector)
+
+    if element.tag_name() == "select":
+        select = Select(element)
+        grabbed_value = select.first_selected_option()
+        logging.info(f"Grabbed value {grabbed_value} from selector '{selector}' for 'select'")
+        return grabbed_value
+
+    grabbed_value = element.get_attribute("value")
+    logging.info(f"Grabbed value {grabbed_value} from selector '{selector}'")
+    return grabbed_value
+
+
+# Checking state methods
 
 def is_element_exists(selector: str) -> bool:
-    logging.info(f"Check if an element exists '{selector}'")
+    logging.info(f"Check if an element '{selector}' exists")
     return len(locate_elements(selector)) > 0
 
 
 def is_element_not_exists(selector: str) -> bool:
-    logging.info(f"Check if an element not exists '{selector}'")
+    logging.info(f"Check if an element '{selector}' not exists")
     return len(locate_elements(selector)) == 0
+
+
+def is_element_visible(selector: str) -> bool:
+    logging.info(f"Check if an element '{selector}' visible")
+    if is_element_exists(selector):
+        return locate_element(selector).is_displayed()
+    return False
+
+
+def is_element_not_visible(selector: str) -> bool:
+    logging.info(f"Check if an element '{selector}' not visible")
+    if is_element_exists(selector):
+        return locate_element(selector).is_displayed()
+    return True
+
+
+def is_element_selected(selector: str) -> bool:
+    logging.info(f"Check if an element '{selector}' selected")
+    return locate_element(selector).is_selected()
+
+
+def is_element_enabled(selector: str) -> bool:
+    logging.info(f"Check if an element '{selector}' enabled")
+    return locate_element(selector).is_enabled()
 
 
 # Managing cookies methods
@@ -142,7 +196,7 @@ def locate_elements(css_selector: str) -> List[WebElement]:
         raise ATException("At this time only CSS selectors allowed. Invalid selector: " + css_selector)
 
 
-# Browser direct methods
+# Browser management methods
 
 def reload_page():
     logging.info("Reloading page")
@@ -178,6 +232,57 @@ def get_domain() -> str:
 
     logging.info(f"Got domain '{extended_domain}' from URL '{url}'")
     return extended_domain
+
+
+# Switching windows methods
+
+def open_new_window(need_close_current_window: bool = False):
+    logging.info("Opening new window and switch to it")
+    execute_js("window.open();")
+    if need_close_current_window:
+        close_current_window()
+
+    switch_to_next_window()
+
+
+def switch_to_next_window() -> bool:
+    timeout = waiting_actions.get_waiting_timeout_from_env_if_necessary()
+    logging.info(f"Switching to a new browser tab/window with timeout {timeout} seconds")
+    try:
+        old_handle = driver.instance.current_window_handle
+    except Exception:
+        old_handle = "no such window"
+
+    try_count = 0
+    while try_count < timeout:
+        logging.info(f"Attempt {try_count} of switching to a new browser tab/window'")
+        last_window = driver.instance.window_handles[-1]
+        driver.instance.switch_to.window(last_window)
+
+        if driver.instance.current_window_handle != old_handle:
+            return True
+
+        time.sleep(1)
+        try_count += 1
+
+    raise ATException(f"Could not switch to a new tab/windows for {timeout} seconds.")
+
+
+def switch_to_first_window():
+    logging.info("Switching to first window")
+    first_window = driver.instance.window_handles[0]
+    driver.instance.switch_to.window(first_window)
+
+
+def switch_to_last_window():
+    logging.info("Switching to last window")
+    last_window = driver.instance.window_handles[-1]
+    driver.instance.switch_to.window(last_window)
+
+
+def close_current_window():
+    logging.info("Closing current window")
+    driver.instance.close()
 
 
 # Executing JS methods
