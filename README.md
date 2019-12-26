@@ -14,7 +14,7 @@ Python 3.8+
 `sh run_tests_in_docker.sh prod_pytest.ini`
 
 ### Run your tests with local Python
-`pipenv run pytest -c prod_pytest.ini` – with config `prod_pytest.ini` and show `print` logs 
+`pipenv run pytest -c prod_pytest.ini` – with config `prod_pytest.ini`
 
 ### Run your tests with parallel mode
 Change in *.ini-file `addopts = -nX` option for desired count of parallel tests
