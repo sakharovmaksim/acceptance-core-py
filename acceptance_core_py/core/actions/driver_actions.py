@@ -93,10 +93,10 @@ def grab_text_from_hidden_elements(selector: str) -> List:
 def grab_value_from_element(selector: str) -> str:
     element = locate_element(selector)
 
-    if element.tag_name() == "select":
+    if element.tag_name == "select":
         select = Select(element)
-        grabbed_value = select.first_selected_option()
-        logging.info(f"Grabbed value {grabbed_value} from selector '{selector}' for 'select'")
+        grabbed_value = select.first_selected_option
+        logging.info(f"Grabbed value {grabbed_value.text} from selector '{selector}' for 'select'")
         return grabbed_value
 
     grabbed_value = element.get_attribute("value")
