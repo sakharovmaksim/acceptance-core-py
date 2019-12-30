@@ -23,9 +23,10 @@ def initialize() -> WebDriver:
 
     logging.info("Creating WebDriver Remote instance by " + command_executor_url)
 
+    current_test_name = os.environ.get('PYTEST_CURRENT_TEST').split(':')[-1].split(' ')[0]
     capabilities = DesiredCapabilities.CHROME.copy()
     capabilities['enableVNC'] = True
-    capabilities['name'] = "ui test powered by Python"
+    capabilities['name'] = current_test_name
 
     chrome_options = Options()
 
