@@ -23,10 +23,12 @@ def initialize() -> WebDriver:
 
     logging.info("Creating WebDriver Remote instance by " + command_executor_url)
 
-    current_test_name = os.environ.get('PYTEST_CURRENT_TEST').split(':')[-1].split(' ')[0]
+    test_file_name = os.environ.get('PYTEST_CURRENT_TEST').split(':')[0]
+    test_name_for_show = test_file_name + "::" + os.environ.get('PYTEST_CURRENT_TEST').split(':')[-1].split(' ')[0]
+
     capabilities = DesiredCapabilities.CHROME.copy()
     capabilities['enableVNC'] = True
-    capabilities['name'] = current_test_name
+    capabilities['name'] = test_name_for_show
 
     chrome_options = Options()
 

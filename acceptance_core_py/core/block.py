@@ -18,14 +18,15 @@ class Block(ABC):
         if selector is None:
             selector = Selector("")
         if isinstance(selector, Selector):
-            self.selector = self.get_block_selector_from_context(selector)
+            self.selector = self.get_block_selector_from_context_selector(selector)
         else:
+            # If selector is string or something else...
             self.selector = Selector(str(selector))
 
     def __str__(self):
         return self.me().__str__()
 
-    def get_block_selector_from_context(self, context_selector: Selector) -> Selector:
+    def get_block_selector_from_context_selector(self, context_selector: Selector) -> Selector:
         if self.block_class:
             return context_selector.child_by_class(self.block_class)
         elif self.block_class_contains:

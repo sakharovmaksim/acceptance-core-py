@@ -30,3 +30,8 @@ Default for docker-script
 
 ![Sample of HTML-report](images/report_new.png)
 
+## Run one specific test
+`pipenv run pytest tests/test_sample_ui.py -k 'test_simple_test_2' -c prod_pytest.ini`
+
+## Run one specific file with tests
+`pipenv run pytest tests/test_sample_ui.py -c prod_pytest.ini`
