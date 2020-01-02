@@ -48,7 +48,7 @@ def double_click(selector: str):
 
 def open_relative_url(relative_url: str = ""):
     opened_url = env.get_base_url() + relative_url
-    logging.info("Opening URL " + opened_url)
+    logging.info(f"Opening URL '{opened_url}'")
     driver.instance.get(opened_url)
     waiting_actions.wait_for_load()
 
@@ -67,40 +67,39 @@ def grab_text_from_element(selector: str) -> str:
         return ""
 
     element = locate_element(selector)
-    grabbed_text = element.text() if element.is_displayed() else grab_text_from_hidden_element(selector)
+    grabbed_text = element.text if element.is_displayed() else grab_text_from_hidden_element(selector)
     logging.info(f"Grabbed text '{grabbed_text}' from selector '{selector}'")
     return grabbed_text
 
 
 def grab_text_from_hidden_element(selector: str) -> str:
-    text = execute_js("return " + get_dom_object(selector, "textContent"))
-    logging.debug(f"Grabbed text '{text}' from hidden selector '{selector}' by JS")
-    return text
+    grabbed_text = execute_js("return " + get_dom_object(selector, "textContent"))
+    logging.debug(f"Grabbed text '{grabbed_text}' from hidden selector '{selector}' by JS")
+    return grabbed_text
 
 
 def grab_text_from_hidden_elements(selector: str) -> List:
     result = list()
     i = 0
     for element in locate_elements(selector):
-        grabbed_text = element.text() if element.is_displayed() else execute_js(
+        grabbed_text = element.text if element.is_displayed() else execute_js(
             f"return $('{selector}').eq({i}).text();")
         result.append(grabbed_text)
         i += 1
     return result
 
 
-# TODO Need to test this method
 def grab_value_from_element(selector: str) -> str:
     element = locate_element(selector)
 
-    if element.tag_name() == "select":
+    if element.tag_name == "select":
         select = Select(element)
-        grabbed_value = select.first_selected_option()
-        logging.info(f"Grabbed value {grabbed_value} from selector '{selector}' for 'select'")
+        grabbed_value = select.first_selected_option.text
+        logging.info(f"Grabbed value '{grabbed_value}' from selector '{selector}' as 'select' element")
         return grabbed_value
 
-    grabbed_value = element.get_attribute("value")
-    logging.info(f"Grabbed value {grabbed_value} from selector '{selector}'")
+    grabbed_value = element.text
+    logging.info(f"Grabbed value '{grabbed_value}' from selector '{selector}'")
     return grabbed_value
 
 
@@ -161,7 +160,7 @@ def get_all_cookies() -> dict:
 
 
 def get_cookie_with_name(cookie_name: str) -> dict:
-    logging.info(f"Get cookie with name {cookie_name}")
+    logging.info(f"Get cookie with name '{cookie_name}'")
     return driver.instance.get_cookie(cookie_name)
 
 
@@ -186,14 +185,14 @@ def locate_element(css_selector: str) -> WebElement:
     try:
         return driver.instance.find_element_by_css_selector(css_selector)
     except NoSuchElementException:
-        raise ATException("At this time only CSS selectors allowed. Invalid selector: " + css_selector)
+        raise ATException(f"Can not find selector: '{css_selector}'. At this time only CSS selectors allowed.")
 
 
 def locate_elements(css_selector: str) -> List[WebElement]:
     try:
         return driver.instance.find_elements_by_css_selector(css_selector)
     except NoSuchElementException:
-        raise ATException("At this time only CSS selectors allowed. Invalid selector: " + css_selector)
+        raise ATException(f"Can not find selector: '{css_selector}'. At this time only CSS selectors allowed.")
 
 
 # Browser management methods

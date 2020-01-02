@@ -24,7 +24,11 @@ class Block(ABC):
             self.selector = Selector(str(selector))
 
     def __str__(self):
-        return self.me().__str__()
+        return self.me.__str__()
+
+    @property
+    def me(self) -> Selector:
+        return self.selector
 
     def get_block_selector_from_context_selector(self, context_selector: Selector) -> Selector:
         if self.block_class:
@@ -40,6 +44,3 @@ class Block(ABC):
         else:
             raise ATException("Your Block implementation must have either block_id, block_class, " +
                               "block_tag or block_attribute_name and block_attribute_value property specified.")
-
-    def me(self) -> Selector:
-        return self.selector

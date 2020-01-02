@@ -6,4 +6,4 @@ class TitleBlock(Block):
     block_tag = "title"
 
     def get_title_text(self) -> str:
-        return driver_actions.grab_text_from_element(self.me().__str__())
+        return driver_actions.grab_text_from_element(self.me.__str__())

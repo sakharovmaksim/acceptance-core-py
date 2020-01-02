@@ -23,7 +23,7 @@ class MainPage(BasePage):
     def wait_for_ready(self):
         waiting_actions.wait_for_load()
         waiting_actions.wait_for_element_visible(
-            self.get_header_menu_block().me().__str__(), "Could not waiting for visibility Header menu block")
+            self.get_header_menu_block().me.__str__(), "Could not waiting for visibility Header menu block")
 
     # Page interactive methods...
 
