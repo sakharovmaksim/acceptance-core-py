@@ -125,7 +125,7 @@ def is_element_visible(selector: str) -> bool:
 def is_element_not_visible(selector: str) -> bool:
     logging.info(f"Check if an element '{selector}' not visible")
     if is_element_exists(selector):
-        return locate_element(selector).is_displayed()
+        return not locate_element(selector).is_displayed()
     return True
 
 

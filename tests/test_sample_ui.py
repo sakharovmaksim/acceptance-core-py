@@ -1,4 +1,4 @@
-from acceptance_core_py.core.actions import driver_actions
+from acceptance_core_py.core.actions import driver_actions, assert_actions
 from acceptance_core_py.core.test_case import TestCase
 from content.openers.main.main_page_opener import MainPageOpener
 
@@ -10,8 +10,8 @@ class TestClass(TestCase):
         title_text = main_page.get_title_block().get_title_text()
 
         assert title_text != "", "Title text must be not empty"
-        assert driver_actions.is_element_exists(
-            main_page.get_header_menu_block().me.__str__()), "Header block is not exists"
+        assert_actions.assert_selector_visible(
+            main_page.get_header_menu_block().me.__str__(), "Header block is not visible")
 
     def test_simple_test_2(self):
         """Example of test with Page -> Block mechanics"""
