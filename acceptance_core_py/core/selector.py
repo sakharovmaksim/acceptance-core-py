@@ -74,7 +74,7 @@ class Selector:
     # Others...
 
     def nth_of_type(self, index: int) -> Selector:
-        return self.get_instance(self.selector + f":nth-of-type({index})")
+        return self.get_instance(self.selector + f":nth-of-type({str(index)})")
 
     def first(self) -> Selector:
         return self.get_instance(self.selector + ":first")
