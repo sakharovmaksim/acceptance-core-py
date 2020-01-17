@@ -30,6 +30,7 @@ pytest-xdist = "*"
 allure-pytest = "*"
 tldextract = "*"
 python-dateutil = "*"
+pytest-rerunfailures = "*"
 
 [requires]
 python_version = "3.8"
