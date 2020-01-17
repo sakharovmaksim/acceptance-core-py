@@ -33,7 +33,6 @@ def click_by_html(selector: str):
     waiting_actions.wait_for_load()
 
 
-# TODO Need to test this method
 def double_click(selector: str):
     element = locate_element(selector)
     if env.is_enable_mobile_emulation_mode():
@@ -180,6 +179,10 @@ def clear_session_storage():
 
 
 # Locate element or elements methods
+
+def get_elements_count(css_selector: str) -> int:
+    return len(locate_elements(css_selector))
+
 
 def locate_element(css_selector: str) -> WebElement:
     try:
