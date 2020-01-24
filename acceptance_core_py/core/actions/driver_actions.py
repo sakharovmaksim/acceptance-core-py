@@ -287,6 +287,12 @@ def close_current_window():
     driver.instance.close()
 
 
+# Resize window methods
+
+def set_window_size(window_width: int, page_height: int):
+    logging.info(f"Set window size to width: {str(window_width)} and height: {str(page_height)}")
+    driver.instance.set_window_size(window_width, page_height)
+
 # Executing JS methods
 
 def get_dom_object(css_selector: str, property_or_method_to_execute: str = None) -> str:

@@ -4,6 +4,18 @@ import unittest
 from acceptance_core_py.core import driver
 from acceptance_core_py.core.actions import driver_actions
 from acceptance_core_py.helpers.utils import strings_utils
+from acceptance_core_py.core.actions.screenshot_actions import ScreenshotActions
+
+
+def decorator_screenshot_on_failed_test(func):
+    def wrapper(self, *args, **kwargs):
+        try:
+            func(self, *args, **kwargs)
+        except Exception:
+            ScreenshotActions.get_instance().capture_screenshot("FAILED")
+            raise
+
+    return wrapper
 
 
 class TestCase(unittest.TestCase):
