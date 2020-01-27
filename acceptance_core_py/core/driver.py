@@ -22,9 +22,7 @@ def initialize() -> WebDriver:
         raise ATException("Do not set GGR_PLAYBACK_HOST in config-file! Set it, please!")
 
     logging.info("Creating WebDriver Remote instance by " + command_executor_url)
-
-    test_file_name = os.environ.get('PYTEST_CURRENT_TEST').split(':')[0]
-    test_name_for_show = test_file_name + "::" + os.environ.get('PYTEST_CURRENT_TEST').split(':')[-1].split(' ')[0]
+    test_name_for_show = env.get_test_file_name() + "::" + env.get_test_name()
 
     capabilities = DesiredCapabilities.CHROME.copy()
     capabilities['enableVNC'] = True
