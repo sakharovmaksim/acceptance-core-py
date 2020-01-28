@@ -17,8 +17,6 @@ class ScreenshotActions:
     def __init__(self):
         if not ScreenshotActions.__instance:
             self.screenshots_dir_name_postfix = date_utils.generate_date(format_date="%Y-%m-%d-%H-%M-%S")
-        else:
-            return
 
     @classmethod
     def get_instance(cls):
