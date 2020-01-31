@@ -25,6 +25,7 @@ def click(selector: str):
     else:
         logging.info(f"Native click on element with selector '{selector}'")
         locate_element(selector).click()
+    waiting_actions.wait_for_load()
 
 
 def click_by_html(selector: str):
@@ -41,6 +42,7 @@ def double_click(selector: str):
     else:
         logging.info(f"Double click on element with selector '{selector}'")
         ActionChains(driver.instance).double_click(element).perform()
+    waiting_actions.wait_for_load()
 
 
 # Openers methods
