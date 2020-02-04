@@ -1,11 +1,14 @@
 import logging
-
 import time
+from time import sleep
+from urllib.parse import urlparse
+
 import tldextract
 from typing import List
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver import TouchActions, ActionChains
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.select import Select
 
@@ -45,10 +48,22 @@ def double_click(selector: str):
     waiting_actions.wait_for_load()
 
 
+def focus(selector: str):
+    logging.info(f"Focus on element with selector '{selector}' by HTML")
+    execute_js(get_dom_object(selector, "focus()"))
+
+
 # Openers methods
 
-def open_relative_url(relative_url: str = ""):
+def open_relative_url_using_base_url(relative_url: str = ""):
     opened_url = env.get_base_url() + relative_url
+    logging.info(f"Opening URL '{opened_url}'")
+    driver.instance.get(opened_url)
+    waiting_actions.wait_for_load()
+
+
+def open_relative_url_using_current_url(relative_url: str = ""):
+    opened_url = get_url().rstrip('/') + relative_url
     logging.info(f"Opening URL '{opened_url}'")
     driver.instance.get(opened_url)
     waiting_actions.wait_for_load()
@@ -57,6 +72,14 @@ def open_relative_url(relative_url: str = ""):
 def open_direct_url(url: str):
     logging.info(f"Opening direct URL '{url}'")
     driver.instance.get(url)
+    waiting_actions.wait_for_load()
+
+
+def open_subdomain_url(subdomain: str):
+    parsed_url = urlparse(env.get_base_url())
+    generated_url = f"{parsed_url.scheme}://{subdomain}.{parsed_url.netloc}"
+    logging.info(f"Opening subdomain with URL '{generated_url}'")
+    driver.instance.get(generated_url)
     waiting_actions.wait_for_load()
 
 
@@ -104,6 +127,57 @@ def grab_value_from_element(selector: str) -> str:
     return grabbed_value
 
 
+# Input in fields methods
+
+def input_in_field(selector: str,
+                   string_to_input: str,
+                   need_check_for_correctly_input: bool = True,
+                   need_click_by_html: bool = False):
+    click_by_html(selector) if need_click_by_html else click(selector)
+    clear_field(selector)
+    logging.info(f"Inputting string '{string_to_input}' in field with selector '{selector}'")
+    send_chars(selector=selector, chars=string_to_input, need_check_for_correctly_input=need_check_for_correctly_input)
+
+
+def send_chars(selector: str, chars: str, need_check_for_correctly_input: bool = True):
+    logging.info(f"Sending chars '{chars}' in field with selector '{selector}'")
+    element = locate_element(selector)
+    element.send_keys(chars)
+
+    if need_check_for_correctly_input:
+        for i in range(1, 3):
+            try:
+                element_value = grab_text_from_element(selector)
+            except Exception:
+                element_value = ''
+            if element_value == chars:
+                return
+            logging.info(f"Incorrectly send chars '{chars}' in field with selector {selector} for {i} attempt. "
+                         f"Trying sending chars by each char")
+            clear_field_with_keyboard(selector)
+            send_keys_by_chars(selector=selector, chars=chars)
+
+
+def send_keys_by_chars(selector: str, chars: str):
+    logging.info(f"Sending chars '{chars}' by each char in field with selector '{selector}'")
+    element = locate_element(selector)
+    for char in chars:
+        element.send_keys(char)
+        # Sleep in 0.1 second for stability in Chrome
+        sleep(0.1)
+
+
+def clear_field(selector: str):
+    logging.info(f"Clearing field with selector '{selector}'")
+    locate_element(selector).clear()
+
+
+def clear_field_with_keyboard(selector: str):
+    logging.info(f"Clearing field with selector '{selector}' with keyboard")
+    send_chars(selector, Keys.CONTROL + 'a', need_check_for_correctly_input=False)
+    send_chars(selector, Keys.DELETE, need_check_for_correctly_input=False)
+
+
 # Checking state methods
 
 def is_element_exists(selector: str) -> bool:
@@ -146,7 +220,7 @@ def add_cookie_to_domain(name: str, value: str, domain: str = None):
     if domain is None:
         domain = get_domain()
 
-    open_relative_url()
+    open_relative_url_using_base_url()
 
     logging.info(f"Add cookie with name: '{name}', value: '{value}', domain: '{domain}'")
     driver.instance.add_cookie({'name': name, 'value': value, 'domain': domain})
@@ -183,7 +257,9 @@ def clear_session_storage():
 # Locate element or elements methods
 
 def get_elements_count(css_selector: str) -> int:
-    return len(locate_elements(css_selector))
+    elements_count = len(locate_elements(css_selector))
+    logging.info(f"Count of elements with selector '{css_selector}' is {str(elements_count)}")
+    return elements_count
 
 
 def locate_element(css_selector: str) -> WebElement:
@@ -229,10 +305,10 @@ def get_domain() -> str:
 
     extract_result = tldextract.extract(url)
 
-    sub_domain = extract_result.subdomain
+    subdomain = extract_result.subdomain
     domain = extract_result.domain
     suffix = extract_result.suffix
-    extended_domain = sub_domain + "." + domain + "." + suffix
+    extended_domain = subdomain + "." + domain + "." + suffix
 
     logging.info(f"Got domain '{extended_domain}' from URL '{url}'")
     return extended_domain
@@ -294,6 +370,7 @@ def close_current_window():
 def set_window_size(window_width: int, page_height: int):
     logging.info(f"Set window size to width: {str(window_width)} and height: {str(page_height)}")
     driver.instance.set_window_size(window_width, page_height)
+
 
 # Executing JS methods
 
