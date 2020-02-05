@@ -3,12 +3,16 @@
 ## Requirements
 Python 3.8+
 
-## Install
-### Install pipenv
-`brew install pipenv`
+## Install for MacOS
+### Install Python 3
+https://www.python.org/downloads/
 
-### Install dependencies
-`pipenv install`
+### Install pip if needed
+https://pip.pypa.io/en/stable/installing/#installing-with-get-pip-py
+
+### Install pipenv
+https://pypi.org/project/pipenv/
+With brew: `brew install pipenv`
 
 ### Run your tests with Docker in easy way
 `sh run_tests_in_docker.sh prod_pytest.ini`

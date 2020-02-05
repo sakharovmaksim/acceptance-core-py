@@ -155,10 +155,10 @@ def send_chars(selector: str, chars: str, need_check_for_correctly_input: bool =
             logging.info(f"Incorrectly send chars '{chars}' in field with selector {selector} for {i} attempt. "
                          f"Trying sending chars by each char")
             clear_field_with_keyboard(selector)
-            send_keys_by_chars(selector=selector, chars=chars)
+            send_chars_by_char(selector=selector, chars=chars)
 
 
-def send_keys_by_chars(selector: str, chars: str):
+def send_chars_by_char(selector: str, chars: str):
     logging.info(f"Sending chars '{chars}' by each char in field with selector '{selector}'")
     element = locate_element(selector)
     for char in chars:
