@@ -28,6 +28,11 @@ def initialize() -> WebDriver:
     capabilities['enableVNC'] = True
     capabilities['name'] = test_name_for_show
 
+    browser_version = str(os.environ["BROWSER_VERSION"])
+    if browser_version and browser_version != 'DEFAULT':
+        logging.info(f"Requested browser version '{browser_version}'. Setting this version for browser")
+        capabilities['version'] = browser_version
+
     chrome_options = Options()
 
     chrome_prefs = {
