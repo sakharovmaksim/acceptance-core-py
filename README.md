@@ -1,4 +1,4 @@
-# Acceptance Core For Selenium. Powered by Python
+# Acceptance Tests framework sample. Powered by Python and Selenium.
 =================================================
 ## Requirements
 Python 3.8+
