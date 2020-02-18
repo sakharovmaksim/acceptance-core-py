@@ -69,3 +69,22 @@ class TestCase(unittest.TestCase):
     def assert_not_equal(self, expected, actual, comment_message: str = "Expected and actual are equals and it is bad"):
         logging.info(f"Asserting that expected '{str(expected)}' is not equals with actual '{str(actual)}'")
         self.assertNotEqual(first=expected, second=actual, msg=comment_message)
+
+    def assert_greater(self, actual, expected, comment_message: str = "Actual value is not greater than expected"):
+        logging.info(f"Asserting that actual '{str(actual)}' greater than expected '{str(expected)}'")
+        self.assertGreater(a=actual, b=expected, msg=comment_message)
+
+    def assert_greater_equal(self, actual, expected, comment_message: str = "Actual value is not greater with "
+                                                                            "equal than expected"):
+        logging.info(f"Asserting that actual '{str(actual)}' greater with equal than expected '{str(expected)}'")
+        self.assertGreaterEqual(a=actual, b=expected, msg=comment_message)
+
+    # Use for testing regex: https://regex101.com/#pcre
+
+    def assert_regex(self, text, expected_regex, comment_message="Expected regex is not find in text"):
+        logging.info(f"Asserting that expected regex '{str(expected_regex)}' finded in text '{text}'")
+        self.assertRegex(text, expected_regex, comment_message)
+
+    def assert_not_regex(self, text, unexpected_regex, comment_message="Expected regex is find in text. It's bad"):
+        logging.info(f"Asserting that unexpected regex '{str(unexpected_regex)}' finded in text '{text}'")
+        self.assertNotRegex(text, unexpected_regex, comment_message)
