@@ -5,7 +5,7 @@ from acceptance_core_py.core.actions.screenshot_actions import ScreenshotActions
 
 class TestClass(TestCase):
     @decorator_screenshot_on_failed_test
-    def test_simple_test_1(self):
+    def test_simple_example_1(self):
         """Example of page opener test with capture screenshot"""
         main_page = MainPageOpener().open_main_page()
         title_text = main_page.title_block.get_title_text()
@@ -16,7 +16,7 @@ class TestClass(TestCase):
         ScreenshotActions.get_instance().capture_screenshot()
 
     @decorator_screenshot_on_failed_test
-    def test_simple_test_2(self):
+    def test_simple_example_2(self):
         """Example of test with Page -> Block mechanics"""
         main_page = MainPageOpener().open_main_page()
         main_page = main_page.click_men_section_and_open_main_page()
@@ -29,31 +29,13 @@ class TestClass(TestCase):
                               comment_message="Main menu text must be not empty")
 
     @decorator_screenshot_on_failed_test
-    def test_simple_test_3(self):
+    def test_simple_example_3(self):
         main_page = MainPageOpener().open_main_page()
         title_text = main_page.title_block.get_title_text()
         self.assert_not_equal("", title_text, "Title can't be empty!")
 
     @decorator_screenshot_on_failed_test
-    def test_simple_test_4(self):
-        main_page = MainPageOpener().open_main_page()
-        title_text = main_page.title_block.get_title_text()
-        self.assert_not_equal("", title_text, "Title can't be empty!")
-
-    @decorator_screenshot_on_failed_test
-    def test_simple_test_5(self):
-        main_page = MainPageOpener().open_main_page()
-        title_text = main_page.title_block.get_title_text()
-        self.assert_not_equal("", title_text, "Title can't be empty!")
-
-    @decorator_screenshot_on_failed_test
-    def test_simple_test_6(self):
-        main_page = MainPageOpener().open_main_page()
-        title_text = main_page.title_block.get_title_text()
-        self.assert_not_equal("", title_text, "Title can't be empty!")
-
-    @decorator_screenshot_on_failed_test
-    def test_simple_test_7(self):
+    def test_simple_example_4(self):
         main_page = MainPageOpener().open_main_page()
         title_text = main_page.title_block.get_title_text()
         # Sample of direct Python assert

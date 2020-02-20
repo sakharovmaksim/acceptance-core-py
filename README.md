@@ -34,8 +34,11 @@ Default for docker-script
 
 ![Sample of HTML-report](images/report_new.png)
 
+## Run with custom ONE thread and without reruns on failed tests. Hint: Use for development tests
+`pipenv run pytest -c pytest.ini -n0 --reruns 0`
+
 ## Run one specific test
-`pipenv run pytest tests/test_sample_ui.py -k 'test_simple_test_2' -c pytest.ini`
+`pipenv run pytest tests/test_sample_ui.py -k 'test_simple_example_1' -c pytest.ini`
 
 ## Run one specific file with tests
 `pipenv run pytest tests/test_sample_ui.py -c pytest.ini`
