@@ -47,6 +47,9 @@ def initialize() -> WebDriver:
     chrome_options.add_argument("disable-infobars")
     chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--disable-notifications")
+    # Delete this option if browser is too slow for you usage
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--no-sandbox")
 
     if env.is_enable_mobile_emulation_mode():
         logging.info("Enabling mobile emulation mode")
