@@ -19,7 +19,7 @@ def initialize() -> WebDriver:
 
     command_executor_url = os.environ["GGR_PLAYBACK_HOST"]
     if not command_executor_url:
-        raise ATException("Do not set GGR_PLAYBACK_HOST in config-file! Set it, please!")
+        raise ATException("Don't set GGR_PLAYBACK_HOST in config-file! Set it, please!")
 
     logging.info("Creating WebDriver Remote instance by " + command_executor_url)
     test_name_for_show = env.get_test_file_name() + "::" + env.get_test_name()
@@ -47,7 +47,6 @@ def initialize() -> WebDriver:
     chrome_options.add_argument("disable-infobars")
     chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--disable-notifications")
-    # Delete this option if browser is too slow for you usage
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--no-sandbox")
 
@@ -71,12 +70,12 @@ def initialize() -> WebDriver:
             options=chrome_options
         )
     except Exception:
-        raise ATException("Could not create WebDriver Remote instance by " + command_executor_url + ". Test cannot start")
+        raise ATException(f"Could not create WebDriver Remote instance by {command_executor_url}. Test cannot start")
 
     return instance
 
 
 def close_driver():
     global instance
-    logging.info("Quit WebDriver. Bye-bye")
+    logging.info("Quit WebDriver instance. Bye-bye!")
     instance.quit()
