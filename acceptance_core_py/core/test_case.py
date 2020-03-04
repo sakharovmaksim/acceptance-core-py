@@ -1,4 +1,5 @@
 import logging
+import os
 import unittest
 
 from acceptance_core_py.core import driver
@@ -15,6 +16,15 @@ def decorator_screenshot_on_failed_test(func):
             ScreenshotActions.get_instance().capture_screenshot("FAILED")
             raise
 
+    return wrapper
+
+
+def decorator_mobile_emulation(func):
+    """Enable mobile emulation mode for current test"""
+    os.environ["MOBILE_EMULATION"] = "True"
+
+    def wrapper(self, *args, **kwargs):
+        func(self, *args, **kwargs)
     return wrapper
 
 

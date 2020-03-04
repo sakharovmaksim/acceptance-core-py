@@ -45,3 +45,7 @@ Default for docker-script
 
 ## Config count of rerunning failed tests
 `--reruns X` in pytest.ini file
+
+## For setting up mobile emulation for test use decorator-method:
+`@decorator_mobile_emulation`  
+`def test_my_feature(self):`
