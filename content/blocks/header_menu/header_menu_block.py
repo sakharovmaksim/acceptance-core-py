@@ -12,7 +12,7 @@ class HeaderMenuBlock(Block):
     block_attribute_value = "top-line-menu"
 
     def get_open_men_menu_button(self) -> Button:
-        return Button(self.me.child_by_attribute(content_vars.test_attr_name, "gender-men-topmenu").__str__())
+        return Button(self.me.child_by_attribute(content_vars.test_attr_name, "gender-men-topmenu"))
 
     def click_open_men_section(self):
         logging.info("Click on men section link in header block")
@@ -20,4 +20,4 @@ class HeaderMenuBlock(Block):
 
     def get_text_from_main_menu(self) -> str:
         return driver_actions.grab_value_from_element(
-            Selector("").child_by_attribute(content_vars.test_attr_name, "main-menu").__str__())
+            Selector("").child_by_attribute(content_vars.test_attr_name, "main-menu"))

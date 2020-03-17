@@ -3,6 +3,7 @@ import os
 import unittest
 
 from acceptance_core_py.core import driver
+from acceptance_core_py.core.selector import Selector
 from acceptance_core_py.core.actions import driver_actions
 from acceptance_core_py.helpers.utils import strings_utils
 from acceptance_core_py.core.actions.screenshot_actions import ScreenshotActions
@@ -31,30 +32,28 @@ def decorator_mobile_emulation(func):
 class TestCase(unittest.TestCase):
     def setUp(self):
         driver.initialize()
-        # TODO (Delete) Example of adding cookie in beginning of each test
-        driver_actions.add_cookie_to_domain("hide_popups", "true")
 
     def tearDown(self):
         driver.close_driver()
 
     # Asserts with advanced logging (add your assert below)
 
-    def assert_selector_exists(self, css_selector: str, comment_message: str = "Selector does not exists"):
+    def assert_selector_exists(self, css_selector: Selector, comment_message: str = "Selector does not exists"):
         logging.info(f"Asserting that selector '{css_selector}' is exists")
         assert driver_actions.is_element_exists(css_selector), \
             f"Assertion failed! Message: {comment_message}. Selector '{css_selector}' does not exists"
 
-    def assert_selector_not_exists(self, css_selector: str, comment_message: str = "Selector exists and it is bad"):
+    def assert_selector_not_exists(self, css_selector: Selector, comment_message: str = "Selector exists and it is bad"):
         logging.info(f"Asserting that selector '{css_selector}' does not exists")
         assert driver_actions.is_element_not_exists(css_selector), \
             f"Assertion failed! Message: {comment_message}. Selector '{css_selector}' is exists and it is bad"
 
-    def assert_selector_visible(self, css_selector: str, comment_message: str = "Selector does not visible"):
+    def assert_selector_visible(self, css_selector: Selector, comment_message: str = "Selector does not visible"):
         logging.info(f"Asserting that selector '{css_selector}' is visible")
         assert driver_actions.is_element_visible(css_selector), \
             f"Assertion failed! Message: {comment_message}. Selector '{css_selector}' does not visible"
 
-    def assert_selector_not_visible(self, css_selector: str,
+    def assert_selector_not_visible(self, css_selector: Selector,
                                     comment_message: str = "Selector is visible and it is bad"):
         logging.info(f"Asserting that selector '{css_selector}' does not visible")
         assert driver_actions.is_element_not_visible(css_selector), \

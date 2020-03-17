@@ -15,13 +15,14 @@ from selenium.webdriver.support.select import Select
 from acceptance_core_py.core import driver
 from acceptance_core_py.core.actions import waiting_actions
 from acceptance_core_py.core.exception.at_exception import ATException
+from acceptance_core_py.core.selector import Selector
 from acceptance_core_py.helpers import env
 from acceptance_core_py.helpers.utils import strings_utils
 
 
 # Click/tap methods
 
-def click(selector: str):
+def click(selector: Selector):
     if env.is_enable_mobile_emulation_mode():
         logging.info(f"Native tap on element with selector '{selector}'")
         TouchActions(driver.instance).tap(locate_element(selector)).perform()
@@ -31,13 +32,13 @@ def click(selector: str):
     waiting_actions.wait_for_load()
 
 
-def click_by_html(selector: str):
+def click_by_html(selector: Selector):
     logging.info(f"Click on element with selector '{selector}' by HTML")
     execute_js(get_dom_object(selector, "click()"))
     waiting_actions.wait_for_load()
 
 
-def double_click(selector: str):
+def double_click(selector: Selector):
     element = locate_element(selector)
     if env.is_enable_mobile_emulation_mode():
         logging.info(f"Double tap on element with selector '{selector}'")
@@ -48,9 +49,21 @@ def double_click(selector: str):
     waiting_actions.wait_for_load()
 
 
-def focus(selector: str):
+def focus(selector: Selector):
     logging.info(f"Focus on element with selector '{selector}' by HTML")
     execute_js(get_dom_object(selector, "focus()"))
+
+
+# Select methods
+
+def select_by_value(selector: Selector, value: str):
+    """TODO Test me before usage"""
+    logging.info(f"Select option with value {value} for selector '{selector}'")
+    element = locate_element(selector)
+
+    select_obj = Select(element)
+    select_obj.select_by_value(value)
+    waiting_actions.wait_for_load()
 
 
 # Openers methods
@@ -63,6 +76,7 @@ def open_relative_url_using_base_url(relative_url: str = ""):
 
 
 def open_relative_url_using_current_url(relative_url: str = ""):
+    # Delete '/' from example url 'https://ct242.nn.zoon.dev/', change to 'https://ct242.nn.zoon.dev'
     opened_url = get_url().rstrip('/') + relative_url
     logging.info(f"Opening URL '{opened_url}'")
     driver.instance.get(opened_url)
@@ -85,7 +99,7 @@ def open_subdomain_url(subdomain: str):
 
 # Grabber methods
 
-def grab_text_from_element(selector: str) -> str:
+def grab_text_from_element(selector: Selector) -> str:
     if is_element_not_exists(selector):
         logging.info(f"Can't grab text from selector '{selector}': element do not exist.")
         return ""
@@ -96,13 +110,13 @@ def grab_text_from_element(selector: str) -> str:
     return grabbed_text
 
 
-def grab_text_from_hidden_element(selector: str) -> str:
+def grab_text_from_hidden_element(selector: Selector) -> str:
     grabbed_text = execute_js("return " + get_dom_object(selector, "textContent"))
     logging.debug(f"Grabbed text '{grabbed_text}' from hidden selector '{selector}' by JS")
     return grabbed_text
 
 
-def grab_text_from_hidden_elements(selector: str) -> List:
+def grab_text_from_hidden_elements(selector: Selector) -> List:
     result = list()
     i = 0
     for element in locate_elements(selector):
@@ -113,7 +127,7 @@ def grab_text_from_hidden_elements(selector: str) -> List:
     return result
 
 
-def grab_value_from_element(selector: str) -> str:
+def grab_value_from_element(selector: Selector) -> str:
     element = locate_element(selector)
 
     if element.tag_name == "select":
@@ -129,7 +143,7 @@ def grab_value_from_element(selector: str) -> str:
 
 # Input in fields methods
 
-def input_in_field(selector: str,
+def input_in_field(selector: Selector,
                    string_to_input: str,
                    need_check_for_correctly_input: bool = True,
                    need_click_by_html: bool = False):
@@ -139,7 +153,7 @@ def input_in_field(selector: str,
     send_chars(selector=selector, chars=string_to_input, need_check_for_correctly_input=need_check_for_correctly_input)
 
 
-def send_chars(selector: str, chars: str, need_check_for_correctly_input: bool = True):
+def send_chars(selector: Selector, chars: str, need_check_for_correctly_input: bool = True):
     logging.info(f"Sending chars '{chars}' in field with selector '{selector}'")
     element = locate_element(selector)
     element.send_keys(chars)
@@ -158,7 +172,7 @@ def send_chars(selector: str, chars: str, need_check_for_correctly_input: bool =
             send_chars_by_char(selector=selector, chars=chars)
 
 
-def send_chars_by_char(selector: str, chars: str):
+def send_chars_by_char(selector: Selector, chars: str):
     logging.info(f"Sending chars '{chars}' by each char in field with selector '{selector}'")
     element = locate_element(selector)
     for char in chars:
@@ -167,12 +181,12 @@ def send_chars_by_char(selector: str, chars: str):
         sleep(0.1)
 
 
-def clear_field(selector: str):
+def clear_field(selector: Selector):
     logging.info(f"Clearing field with selector '{selector}'")
     locate_element(selector).clear()
 
 
-def clear_field_with_keyboard(selector: str):
+def clear_field_with_keyboard(selector: Selector):
     logging.info(f"Clearing field with selector '{selector}' with keyboard")
     send_chars(selector, Keys.CONTROL + 'a', need_check_for_correctly_input=False)
     send_chars(selector, Keys.DELETE, need_check_for_correctly_input=False)
@@ -180,36 +194,36 @@ def clear_field_with_keyboard(selector: str):
 
 # Checking state methods
 
-def is_element_exists(selector: str) -> bool:
+def is_element_exists(selector: Selector) -> bool:
     logging.info(f"Check if an element '{selector}' exists")
     return len(locate_elements(selector)) > 0
 
 
-def is_element_not_exists(selector: str) -> bool:
+def is_element_not_exists(selector: Selector) -> bool:
     logging.info(f"Check if an element '{selector}' not exists")
     return len(locate_elements(selector)) == 0
 
 
-def is_element_visible(selector: str) -> bool:
+def is_element_visible(selector: Selector) -> bool:
     logging.info(f"Check if an element '{selector}' visible")
     if is_element_exists(selector):
         return locate_element(selector).is_displayed()
     return False
 
 
-def is_element_not_visible(selector: str) -> bool:
+def is_element_not_visible(selector: Selector) -> bool:
     logging.info(f"Check if an element '{selector}' not visible")
     if is_element_exists(selector):
         return not locate_element(selector).is_displayed()
     return True
 
 
-def is_element_selected(selector: str) -> bool:
+def is_element_selected(selector: Selector) -> bool:
     logging.info(f"Check if an element '{selector}' selected")
     return locate_element(selector).is_selected()
 
 
-def is_element_enabled(selector: str) -> bool:
+def is_element_enabled(selector: Selector) -> bool:
     logging.info(f"Check if an element '{selector}' enabled")
     return locate_element(selector).is_enabled()
 
@@ -220,7 +234,7 @@ def add_cookie_to_domain(name: str, value: str, domain: str = None):
     if domain is None:
         domain = get_domain()
 
-    open_relative_url_using_base_url()
+    open_relative_url_using_current_url()
 
     logging.info(f"Add cookie with name: '{name}', value: '{value}', domain: '{domain}'")
     driver.instance.add_cookie({'name': name, 'value': value, 'domain': domain})
@@ -237,6 +251,13 @@ def get_all_cookies() -> dict:
 def get_cookie_with_name(cookie_name: str) -> dict:
     logging.info(f"Get cookie with name '{cookie_name}'")
     return driver.instance.get_cookie(cookie_name)
+
+
+def delete_cookie(name: str):
+    logging.info(f"Deleting cookie with name '{name}'")
+    driver.instance.delete_cookie(name)
+    if get_cookie_with_name(name):
+        raise ATException(f"Could not delete cookie with name '{name}'")
 
 
 def clear_all_cookies():
@@ -256,24 +277,26 @@ def clear_session_storage():
 
 # Locate element or elements methods
 
-def get_elements_count(css_selector: str) -> int:
+def get_elements_count(css_selector: Selector) -> int:
     elements_count = len(locate_elements(css_selector))
     logging.info(f"Count of elements with selector '{css_selector}' is {str(elements_count)}")
     return elements_count
 
 
-def locate_element(css_selector: str) -> WebElement:
+def locate_element(css_selector: Selector) -> WebElement:
     try:
-        return driver.instance.find_element_by_css_selector(css_selector)
+        return driver.instance.find_element_by_css_selector(str(css_selector))
     except NoSuchElementException:
-        raise ATException(f"Can not find selector: '{css_selector}'. At this time only CSS selectors allowed.")
+        raise ATException(f"Can not find selector: '{css_selector}'. "
+                          f"For information, at this time only CSS selectors allowed.")
 
 
-def locate_elements(css_selector: str) -> List[WebElement]:
+def locate_elements(css_selector: Selector) -> List[WebElement]:
     try:
-        return driver.instance.find_elements_by_css_selector(css_selector)
+        return driver.instance.find_elements_by_css_selector(str(css_selector))
     except NoSuchElementException:
-        raise ATException(f"Can not find selector: '{css_selector}'. At this time only CSS selectors allowed.")
+        raise ATException(f"Can not find selector: '{css_selector}'. "
+                          f"For information, at this time only CSS selectors allowed.")
 
 
 # Browser management methods
@@ -374,8 +397,8 @@ def set_window_size(window_width: int, page_height: int):
 
 # Executing JS methods
 
-def get_dom_object(css_selector: str, property_or_method_to_execute: str = None) -> str:
-    return f"document.querySelector('{css_selector}')" + \
+def get_dom_object(css_selector: Selector, property_or_method_to_execute: str = None) -> str:
+    return f"document.querySelector('{str(css_selector)}')" + \
            ('' if property_or_method_to_execute is None else f".{property_or_method_to_execute}")
 
 

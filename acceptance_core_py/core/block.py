@@ -1,6 +1,6 @@
+import logging
 from abc import ABC
 
-from acceptance_core_py.core.exception.at_exception import ATException
 from acceptance_core_py.core.selector import Selector
 
 
@@ -24,6 +24,7 @@ class Block(ABC):
             self.selector = Selector(str(selector))
 
     def __str__(self):
+        """Return Block's Selector instance as string"""
         return self.me.__str__()
 
     @property
@@ -42,5 +43,6 @@ class Block(ABC):
         elif self.block_attribute_name and self.block_attribute_value:
             return context_selector.child_by_attribute(self.block_attribute_name, self.block_attribute_value)
         else:
-            raise ATException("Your Block implementation must have either block_id, block_class, " +
-                              "block_tag or block_attribute_name and block_attribute_value property specified.")
+            logging.debug(f"Block do not have your own content selector, "
+                          f"return 'context_selector': '{context_selector}'")
+            return context_selector
