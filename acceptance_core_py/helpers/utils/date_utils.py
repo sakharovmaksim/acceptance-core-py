@@ -1,4 +1,5 @@
 import logging
+import time
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
@@ -21,3 +22,9 @@ def generate_date(relative_delta: int = +0, delta_type: str = "days", format_dat
     date = date.strftime(format_date)
     logging.info(f"Generate date '{date}' with delta_type '{delta_type}' and relative_delta '{str(relative_delta)}'")
     return date
+
+def generate_timestamp() -> float:
+    """Return like: 1585818190.7445524"""
+    timestamp = time.time()
+    logging.info(f"Generated timestamp '{str(timestamp)}'")
+    return timestamp

@@ -31,6 +31,9 @@ allure-pytest = "*"
 tldextract = "*"
 python-dateutil = "*"
 pytest-rerunfailures = "*"
+pymongo = "*"
+mysqlclient = "*"
+clickhouse-driver = "*"
 
 [requires]
 python_version = "3.8"
