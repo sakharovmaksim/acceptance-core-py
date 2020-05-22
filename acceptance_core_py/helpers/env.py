@@ -11,10 +11,6 @@ def get_base_url() -> str:
     return base_url
 
 
-def is_enable_mobile_emulation_mode() -> bool:
-    return os.environ["MOBILE_EMULATION"] != "False"
-
-
 def get_waiting_default_timeout() -> int:
     return int(os.environ["WAITING_DEFAULT_TIMEOUT"]) or 35
 

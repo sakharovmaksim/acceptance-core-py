@@ -1,7 +1,6 @@
 from acceptance_core_py.core.actions import driver_actions
 from acceptance_core_py.core.test_case import TestCase, decorator_screenshot_on_failed_test
 from content.openers.main.main_page_opener import MainPageOpener
-from acceptance_core_py.core.actions.screenshot_actions import ScreenshotActions
 
 
 class TestClass(TestCase):

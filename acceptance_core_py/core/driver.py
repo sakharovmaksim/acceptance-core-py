@@ -13,6 +13,8 @@ from acceptance_core_py.helpers import env
 
 instance: WebDriver
 
+mobile_mode: bool = False
+
 
 def initialize() -> WebDriver:
     global instance
@@ -49,9 +51,10 @@ def initialize() -> WebDriver:
     chrome_options.add_argument("--disable-notifications")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument('--ignore-certificate-errors')
 
-    if env.is_enable_mobile_emulation_mode():
-        logging.info("Enabling mobile emulation mode")
+    if mobile_mode:
+        logging.info("Enabling mobile emulation mode for browser instance")
         chrome_options.add_experimental_option(
             "mobileEmulation",
             {

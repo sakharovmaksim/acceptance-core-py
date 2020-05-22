@@ -23,7 +23,7 @@ from acceptance_core_py.helpers.utils import strings_utils
 # Click/tap methods
 
 def click(selector: Selector):
-    if env.is_enable_mobile_emulation_mode():
+    if driver.mobile_mode:
         logging.info(f"Native tap on element with selector '{selector}'")
         TouchActions(driver.instance).tap(locate_element(selector)).perform()
     else:
@@ -40,7 +40,7 @@ def click_by_html(selector: Selector):
 
 def double_click(selector: Selector):
     element = locate_element(selector)
-    if env.is_enable_mobile_emulation_mode():
+    if driver.mobile_mode:
         logging.info(f"Double tap on element with selector '{selector}'")
         TouchActions(driver.instance).double_tap(element).perform()
     else:
@@ -56,10 +56,15 @@ def focus(selector: Selector):
 
 # Select methods
 
-def select_by_value(selector: Selector, value: str):
+def select_by_value(selector: Selector,
+                    value: str,
+                    clear_inline_css_display: bool):
     """TODO Test me before usage"""
     logging.info(f"Select option with value {value} for selector '{selector}'")
     element = locate_element(selector)
+
+    if clear_inline_css_display:
+        execute_js(f"document.querySelector('{selector}').style.display = '';")
 
     select_obj = Select(element)
     select_obj.select_by_value(value)
@@ -138,6 +143,18 @@ def grab_value_from_element(selector: Selector) -> str:
 
     grabbed_value = element.text
     logging.info(f"Grabbed value '{grabbed_value}' from selector '{selector}'")
+    return grabbed_value
+
+
+def get_attr_value_from_element(selector: Selector, attr_name: str) -> str:
+    if is_element_not_exists(selector):
+        logging.warning(f"Can't grab text from selector '{selector}': element do not exist.")
+        return ""
+
+    element = locate_element(selector)
+
+    grabbed_value = element.get_attribute(attr_name)
+    logging.info(f"Grabbed value '{grabbed_value}' from selector '{selector}' and attribute '{attr_name}'")
     return grabbed_value
 
 
@@ -315,7 +332,7 @@ def go_back():
 
 def get_url() -> str:
     url = driver.instance.current_url
-    logging.info(f"Got URL from browser '{url}'")
+    logging.info(f"Got URL from browser: '{url}'")
     return url
 
 

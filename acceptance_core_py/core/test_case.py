@@ -1,5 +1,4 @@
 import logging
-import os
 import unittest
 
 from acceptance_core_py.core import driver
@@ -20,20 +19,13 @@ def decorator_screenshot_on_failed_test(func):
     return wrapper
 
 
-def decorator_mobile_emulation(func):
-    """Enable mobile emulation mode for current test"""
-    os.environ["MOBILE_EMULATION"] = "True"
-
-    def wrapper(self, *args, **kwargs):
-        func(self, *args, **kwargs)
-    return wrapper
-
-
 class TestCase(unittest.TestCase):
     def setUp(self):
+        driver.mobile_mode = False
         driver.initialize()
 
     def tearDown(self):
+        # Close db instances there
         driver.close_driver()
 
     # Asserts with advanced logging (add your assert below)

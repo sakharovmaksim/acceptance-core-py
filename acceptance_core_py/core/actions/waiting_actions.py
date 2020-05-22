@@ -18,7 +18,7 @@ def wait_for_load() -> bool:
 
     while state != "complete":
         if try_count > max_try_count:
-            logging.error(f"Could not waiting for page load for {max_try_count} seconds")
+            logging.warning(f"Could not waiting for page load for {max_try_count} seconds")
             return False
 
         try_count += 1
@@ -97,3 +97,8 @@ def get_waiting_timeout_from_env_if_necessary(timeout: int = None):
 
     logging.debug(f"Set timeout NOT from ENV-config in {timeout} seconds, probably from method's argument")
     return timeout
+
+
+def sleep(seconds: int):
+    logging.info(f"Sleeping for {str(seconds)} seconds...")
+    time.sleep(seconds)

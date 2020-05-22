@@ -1,6 +1,9 @@
 import logging
 import time
+from calendar import timegm
 from datetime import datetime
+from time import strptime
+
 from dateutil.relativedelta import relativedelta
 
 
@@ -28,3 +31,10 @@ def generate_timestamp() -> float:
     timestamp = time.time()
     logging.info(f"Generated timestamp '{str(timestamp)}'")
     return timestamp
+
+
+def convert_to_timestamp(date_to_convert: str, directive_format: str = '%d.%m.%Y') -> int:
+    """Convert a date in int timestamp, return like: 976579200"""
+    date_timestamp = int(timegm(strptime(date_to_convert, directive_format)))
+    logging.info(f"Convert date {date_to_convert} to timestamp '{date_timestamp}'")
+    return date_timestamp
