@@ -11,11 +11,15 @@ https://www.python.org/downloads/
 https://pip.pypa.io/en/stable/installing/#installing-with-get-pip-py
 
 ### Install pipenv
-https://pypi.org/project/pipenv/
+https://pypi.org/project/pipenv/  
+
 With brew: `brew install pipenv`
 
+### Set your Selenoid server
+Look for config pytest.ini and set your Selenoid server to GGR_PLAYBACK_HOST
+
 ### Run your tests with Docker in easy way
-`sh run_tests_in_docker.sh prod_pytest.ini`
+`sh run_tests_in_docker.sh pytest.ini`
 
 ### Run your tests with local Python
 `pipenv run pytest -c pytest.ini` – with config `pytest.ini`
@@ -46,4 +50,5 @@ Default for docker-script
 ## Config count of rerunning failed tests
 `--reruns X` in pytest.ini file
 
-## For setting up mobile emulation use MobileTestCase for this test
+## Mobile emulation
+For setting up mobile emulation use MobileTestCase for this tests
