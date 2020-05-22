@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 if [ -z "$1" ]; then
-    echo "Please, set config file! Example: sh run_tests_in_docker.sh prod_pytest.ini"
+    echo "Please, set config file! Example: sh run_tests_in_docker.sh pytest.ini"
     exit 1
 fi
 
 pwd=`pwd`
 
 TAG="sakharovmaksim/acceptance-tests-base-image-python:latest"
-echo "Локальный запуск api-тестов, используя docker-image $TAG"
+echo "Локальный запуск ui-тестов, используя docker-image $TAG"
 
 CONTAINER_NAME="my_local_acceptance_tests_run"
 
