@@ -48,7 +48,7 @@ Default for docker-script
 `pipenv run pytest tests/test_sample_ui.py -c pytest.ini`
 
 ## Config count of rerunning failed tests
-`--reruns X` in pytest.ini file
+`-max-runs=X` in pytest.ini file
 
 ## Mobile emulation
 For setting up mobile emulation use MobileTestCase for this tests
