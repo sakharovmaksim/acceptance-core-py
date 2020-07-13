@@ -52,3 +52,7 @@ Default for docker-script
 
 ## Mobile emulation
 For setting up mobile emulation use MobileTestCase for this tests
+
+# Visual models tests
+Create visual models references. Run in reference mode `pipenv run pytest visual_tests -c visual_tests/pytest-reference-dev.ini`  
+Test visual models candidates. Run in testing mode `pipenv run pytest visual_tests -c visual_tests/pytest-testing-dev.ini`

@@ -39,3 +39,29 @@ def is_ui_test() -> bool:
     if os.environ.get(var):
         return not is_strings_equals(os.environ.get(var), 'False')
     return True
+
+
+# Data from GitLab CI
+
+def get_git_branch_name() -> str:
+    """Return Git branch name from Gitlab-CI Runner Environment"""
+    var = 'CI_COMMIT_REF_NAME'
+    if os.environ.get(var):
+        return os.environ.get(var)
+    return 'no_ci_branch_name'
+
+
+# For visual tests engine
+
+def is_reference_mode() -> bool:
+    var = 'REFERENCE_MODE'
+    if os.environ.get(var):
+        return os.environ.get(var) == "1"
+    return False
+
+
+def is_testing_mode() -> bool:
+    var = 'TESTING_MODE'
+    if os.environ.get(var):
+        return os.environ.get(var) == "1"
+    return False
