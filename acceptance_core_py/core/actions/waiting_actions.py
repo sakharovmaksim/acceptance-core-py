@@ -75,18 +75,16 @@ def wait_for_ajax(timeout: int = None):
     try:
         logging.info(f"Waiting for complete all ajax-requests for {timeout} seconds")
         wait_for_js("return $.active == 0;", timeout)
-    except Exception:
-        logging.info(f"Could not wait for completion of all AJAX requests during timeout of {timeout} seconds")
+    except Exception as e:
+        logging.warning(f"Could not wait for completion of all AJAX requests during timeout of {timeout} seconds. "
+                        f"With Exception {e}")
 
 
 def wait_for_js(js: str, timeout: int = None):
     timeout = get_waiting_timeout_from_env_if_necessary(timeout)
 
-    def condition(js_script):
-        driver_actions.execute_js(js_script)
-
-    logging.info(f"Waiting for the JS-script return true for {timeout} seconds")
-    ui.WebDriverWait(driver.instance, timeout).until(condition(js))
+    logging.info(f"Waiting for JS-script '{js}' for {timeout} seconds")
+    ui.WebDriverWait(driver.instance, timeout).until(lambda x: x.execute_script(js))
 
 
 def get_waiting_timeout_from_env_if_necessary(timeout: int = None):
