@@ -9,6 +9,7 @@ from acceptance_core_py.core.actions import screenshot_actions_keys
 from acceptance_core_py.core.actions.screenshot_actions import ScreenshotActions
 from acceptance_core_py.core.visual_tests.visual_models_actions import VisualModelsActions
 from acceptance_core_py.helpers import env
+from acceptance_core_py.helpers.clients.sentry_client import SentryClient
 from acceptance_core_py.helpers.clients.webdav_client import WebDavClient
 
 
@@ -46,7 +47,15 @@ def perform_reference_and_candidate_element_diff(web_element: WebElement) -> Opt
                         ignore_alpha=True)
 
     # Diff-скриншот тоже загружаем в WebDav для легкого дебага теста
-    WebDavClient().publish_screenshot(diff_image_local_storage_data)
+    webdav_client = WebDavClient()
+    webdav_client.publish_screenshot(diff_image_local_storage_data)
+
+    # Сеттим в SentryClient инстанс ссылку на папку со скриншотами для отображения в событии Sentry
+    created_webdav_screenshot_storage_data = webdav_client.created_webdav_screenshot_storage_data
+    if created_webdav_screenshot_storage_data and created_webdav_screenshot_storage_data.full_screenshots_dir_url:
+        webdav_screenshots_dir_url = created_webdav_screenshot_storage_data.full_screenshots_dir_url
+        logging.info(f"Setting in SentryClient instance {webdav_screenshots_dir_url=}")
+        SentryClient.get_instance().set_screenshot_url(webdav_screenshots_dir_url)
 
     rounded_diff_percent = round(diff_percent, 2)
     logging.warning(f"Reference model VS Candidate model diff is: {rounded_diff_percent=}")

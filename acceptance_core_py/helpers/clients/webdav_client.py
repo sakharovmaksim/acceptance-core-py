@@ -12,6 +12,8 @@ from acceptance_core_py.helpers.clients.webdav_screenshot_storage_data import We
 
 
 class WebDavClient:
+    __created_webdav_screenshot_storage_data: Optional[WebDavScreenshotStorageData] = None
+
     __options = {
         'webdav_hostname': webdav_keys.webdav_hostname,
         'webdav_login': webdav_keys.webdav_login,
@@ -24,6 +26,10 @@ class WebDavClient:
         self.__client = Client(self.__options)
         if not self.__client.check(self.__screenshots_base_dir):
             self.__client.mkdir(self.__screenshots_base_dir)
+
+    @property
+    def created_webdav_screenshot_storage_data(self) -> Optional[WebDavScreenshotStorageData]:
+        return self.__created_webdav_screenshot_storage_data
 
     def create_webdav_screenshot_storage_data(self,
                                               screenshot_local_storage_data:
@@ -45,13 +51,18 @@ class WebDavClient:
         login = webdav_keys.webdav_login
         password = webdav_keys.webdav_password
         hostname = webdav_keys.webdav_hostname.replace('http://', '')
+        url_prefix = f"http://{login}:{password}@{hostname}" + '/'
+
+        webdav_screenshot_storage_data.set_full_screenshots_dir_url(url_prefix + webdav_dir_for_upload + '/')
 
         screenshot_url_without_prefix = webdav_dir_for_upload + '/' + screenshot_file_name
-        full_screenshot_url = f"http://{login}:{password}@{hostname}" + '/' + screenshot_url_without_prefix
+        full_screenshot_url = url_prefix + screenshot_url_without_prefix
 
         webdav_screenshot_storage_data.set_screenshots_dir_name(webdav_dir_for_upload)
         webdav_screenshot_storage_data.set_screenshot_url_without_prefix(screenshot_url_without_prefix)
         webdav_screenshot_storage_data.set_full_screenshot_url(full_screenshot_url)
+
+        self.__created_webdav_screenshot_storage_data = webdav_screenshot_storage_data
         return webdav_screenshot_storage_data
 
     def publish_screenshot(self, screenshot_local_storage_data: ScreenshotLocalStorageData) -> Optional[str]:
