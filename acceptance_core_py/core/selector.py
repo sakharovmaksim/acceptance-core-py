@@ -1,12 +1,21 @@
 from __future__ import annotations
 
+from selenium.webdriver.remote.webelement import WebElement
+
+from acceptance_core_py.core.actions import driver_actions
+
 
 class Selector:
     def __init__(self, selector: str):
         self.__selector = selector
 
     def __str__(self):
+        """Return Selector as string"""
         return self.__selector
+
+    @property
+    def web_element(self) -> WebElement:
+        return driver_actions.locate_element(self)
 
     # Child by...
 

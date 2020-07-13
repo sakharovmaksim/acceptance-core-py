@@ -1,6 +1,9 @@
 import logging
 from abc import ABC
 
+from selenium.webdriver.remote.webelement import WebElement
+
+from acceptance_core_py.core.actions import driver_actions
 from acceptance_core_py.core.selector import Selector
 
 
@@ -30,6 +33,10 @@ class Block(ABC):
     @property
     def me(self) -> Selector:
         return self.selector
+
+    @property
+    def web_element(self) -> WebElement:
+        return driver_actions.locate_element(self.selector)
 
     def get_block_selector_from_context_selector(self, context_selector: Selector) -> Selector:
         if self.block_class:

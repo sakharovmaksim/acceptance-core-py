@@ -22,7 +22,7 @@ Look for config pytest.ini and set your Selenoid server to GGR_PLAYBACK_HOST
 `sh run_tests_in_docker.sh pytest.ini`
 
 ### Run your tests with local Python
-`pipenv run pytest -c pytest.ini` – with config `pytest.ini`
+`pipenv run pytest tests -c tests/pytest.ini` – with config `pytest.ini`
 
 ### Run your tests with parallel mode
 Change in *.ini-file `addopts = -nX` option for desired count of parallel tests
@@ -39,13 +39,13 @@ Default for docker-script
 ![Sample of HTML-report](images/report_new.png)
 
 ## Run with custom ONE thread and without reruns on failed tests. Hint: Use for development tests
-`pipenv run pytest -c pytest.ini -n0 --reruns 0`
+`pipenv run pytest tests -c tests/pytest.ini -n0 --reruns 0`
 
 ## Run one specific test
-`pipenv run pytest tests/test_sample_ui.py -k 'test_simple_example_1' -c pytest.ini`
+`pipenv run pytest tests/test_sample_ui.py -k 'test_simple_example_1' -c tests/pytest.ini`
 
 ## Run one specific file with tests
-`pipenv run pytest tests/test_sample_ui.py -c pytest.ini`
+`pipenv run pytest tests/test_sample_ui.py -c tests/pytest.ini`
 
 ## Config count of rerunning failed tests
 `-max-runs=X` in pytest.ini file

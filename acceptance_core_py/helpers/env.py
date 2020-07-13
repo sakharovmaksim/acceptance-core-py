@@ -1,5 +1,6 @@
 import logging
 import os
+from acceptance_core_py.helpers.utils.strings_utils import is_strings_equals
 
 
 def get_base_url() -> str:
@@ -27,3 +28,14 @@ def get_test_file_name() -> str:
     test_file_name = os.environ.get('PYTEST_CURRENT_TEST').split(':')[0]
     logging.info(f"Getted current test file name: '{test_file_name}'")
     return test_file_name
+
+
+def is_need_send_metrics() -> bool:
+    return os.environ.get('SEND_METRICS') == "True"
+
+
+def is_ui_test() -> bool:
+    var = 'IS_UI_TEST'
+    if os.environ.get(var):
+        return not is_strings_equals(os.environ.get(var), 'False')
+    return True
