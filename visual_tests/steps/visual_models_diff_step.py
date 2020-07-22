@@ -2,11 +2,11 @@ import logging
 from typing import Optional
 
 import pytest
-from diffimg import diff
 from selenium.webdriver.remote.webelement import WebElement
 
 from acceptance_core_py.core.actions import screenshot_actions_keys
 from acceptance_core_py.core.actions.screenshot_actions import ScreenshotActions
+from acceptance_core_py.core.visual_tests.images_diff_helper import get_images_diff_percent_and_save_diff_img
 from acceptance_core_py.core.visual_tests.visual_models_actions import VisualModelsActions
 from acceptance_core_py.helpers import env
 from acceptance_core_py.helpers.clients.sentry_client import SentryClient
@@ -41,10 +41,9 @@ def perform_reference_and_candidate_element_diff(web_element: WebElement) -> Opt
     diff_image_local_storage_data = screenshot_actions_instance.create_screenshot_local_storage_data('diff')
     diff_image_local_path = diff_image_local_storage_data.full_local_screenshot_path
 
-    diff_percent = diff(str(reference_local_model_data.full_local_screenshot_path.absolute()),
-                        str(candidate_model_local_path.absolute()),
-                        diff_img_file=str(diff_image_local_path.absolute()),
-                        ignore_alpha=True)
+    diff_percent = get_images_diff_percent_and_save_diff_img(reference_local_model_data.full_local_screenshot_path,
+                                                             candidate_model_local_path,
+                                                             diff_image_local_path)
 
     # Diff-скриншот тоже загружаем в WebDav для легкого дебага теста
     webdav_client = WebDavClient()
@@ -57,6 +56,5 @@ def perform_reference_and_candidate_element_diff(web_element: WebElement) -> Opt
         logging.info(f"Setting in SentryClient instance {webdav_screenshots_dir_url=}")
         SentryClient.get_instance().set_screenshot_url(webdav_screenshots_dir_url)
 
-    rounded_diff_percent = round(diff_percent, 2)
-    logging.warning(f"Reference model VS Candidate model diff is: {rounded_diff_percent=}")
-    return rounded_diff_percent
+    logging.warning(f"Reference model VS Candidate model diff is: {diff_percent=}")
+    return diff_percent

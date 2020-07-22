@@ -1,10 +1,11 @@
 from content.openers.main.main_page_opener import MainPageOpener
 from visual_tests.steps import visual_models_diff_step
 from acceptance_core_py.core.asserts import assert_less_equal
+from visual_tests.diff_percents_tolerance import default_models_tolerance
 
 
 class TestTitleBlock:
-    def disable_test_title_block(self):
+    def disabled_test_title_block(self):
         """Sample of test. Enable this test when you setting up config for Cloud Storage visual models"""
         main_page = MainPageOpener().open_main_page()
 
@@ -13,4 +14,5 @@ class TestTitleBlock:
         if models_diff_percent is None:
             return
 
-        assert_less_equal(models_diff_percent, 0.04, "Title block models diff must be less than 0.04%")
+        assert_less_equal(models_diff_percent, default_models_tolerance,
+                          f"Title block models diff must be less than {default_models_tolerance}%")
