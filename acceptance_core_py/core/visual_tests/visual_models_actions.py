@@ -109,9 +109,10 @@ class VisualModelsActions:
         """Create local storage data for future screenshot"""
         screenshot_local_storage_data = ScreenshotLocalStorageData()
 
+        test_name = env.get_test_name()
         test_file_name = env.get_test_file_name().replace("/", "_").replace(".", "_")
         screenshots_path = Path(f"output/models/{test_file_name}/")
-        screenshot_file_name = f"{test_file_name}.png"
+        screenshot_file_name = f"{test_file_name}_{test_name}.png"
         screenshot_path_with_file_name = screenshots_path / screenshot_file_name
 
         screenshot_local_storage_data.set_screenshots_dir_name(test_file_name)
