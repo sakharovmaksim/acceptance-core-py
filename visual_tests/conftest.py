@@ -36,7 +36,8 @@ def run_test(request):
     # Test running here
     yield
 
-    if request.node.rep_call.failed:
+    # For good test exit by CTRL+C check attr 'rep_call' exists in request.node
+    if hasattr(request.node, 'rep_call') and request.node.rep_call.failed:
         send_test_metrics(request)
 
     driver.close_driver()

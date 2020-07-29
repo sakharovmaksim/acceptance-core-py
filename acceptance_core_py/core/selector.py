@@ -20,20 +20,20 @@ class Selector:
     # Child by...
 
     def child_by_class(self, class_name: str, direct_child: bool = False) -> Selector:
-        return self.get_instance(self.__selector + (" > " if direct_child else ' ') + f".{class_name}")
+        return self.__get_instance(self.__selector + (" > " if direct_child else ' ') + f".{class_name}")
 
     def child_by_id(self, id_name: str, direct_child: bool = False) -> Selector:
-        return self.get_instance(self.__selector + (" > " if direct_child else ' ') + f"#{id_name}")
+        return self.__get_instance(self.__selector + (" > " if direct_child else ' ') + f"#{id_name}")
 
     def child_by_attribute(self, name: str, value: str = None, direct_child: bool = False) -> Selector:
         selector = f"[{name}]" if value is None else f"[{name}=\"{value}\"]"
-        return self.get_instance(self.__selector + (" > " if direct_child else ' ') + selector)
+        return self.__get_instance(self.__selector + (" > " if direct_child else ' ') + selector)
 
-    def child_by_tag(self, tag_name: str, direct_child: bool = False) -> Selector:
-        return self.get_instance(self.__selector + (" > " if direct_child else ' ') + tag_name)
+    def child_by_tag(self, tag_name: str, direct_child: bool = True) -> Selector:
+        return self.__get_instance(self.__selector + (" > " if direct_child else ' ') + tag_name)
 
     def child_by_begins_with(self, name: str, type: str = "class") -> Selector:
-        return self.get_instance(self.__selector + f" *[{type}^=\"{name}\"]")
+        return self.__get_instance(self.__selector + f" *[{type}^=\"{name}\"]")
 
     # Child by contains...
 
@@ -41,33 +41,33 @@ class Selector:
         return self.child_by_attribute_contains("class", class_name, direct_child)
 
     def child_by_attribute_contains(self, name: str, value: str, direct_child: bool = False) -> Selector:
-        return self.get_instance(self.__selector + (" > " if direct_child else ' ') + f"[{name}*=\"{value}\"]")
+        return self.__get_instance(self.__selector + (" > " if direct_child else ' ') + f"[{name}*=\"{value}\"]")
 
     # Having...
 
     def having_attribute(self, name: str, value: str = None) -> Selector:
         selector = f"[{name}]" if value is None else f"[{name}=\"{value}\"]"
-        return self.get_instance(self.__selector + selector)
+        return self.__get_instance(self.__selector + selector)
 
     def having_class(self, class_name: str) -> Selector:
-        return self.get_instance(self.__selector + f".{class_name}")
+        return self.__get_instance(self.__selector + f".{class_name}")
 
     def having_tag(self, tag_name: str) -> Selector:
-        return self.get_instance(self.__selector + tag_name)
+        return self.__get_instance(self.__selector + tag_name)
 
     def not_having_class(self, class_name: str) -> Selector:
-        return self.get_instance(self.__selector + f":not(.{class_name})")
+        return self.__get_instance(self.__selector + f":not(.{class_name})")
 
     def not_having_attribute(self, name: str) -> Selector:
-        return self.get_instance(self.__selector + f":not([{name}])")
+        return self.__get_instance(self.__selector + f":not([{name}])")
 
     # Having contains...
 
     def having_attribute_contains(self, name: str, value: str) -> Selector:
-        return self.get_instance(self.__selector + f"[{name}*=\"{value}\"]")
+        return self.__get_instance(self.__selector + f"[{name}*=\"{value}\"]")
 
     def having_attribute_ends_with(self, name: str, value: str) -> Selector:
-        return self.get_instance(self.__selector + f"[{name}$=\"{value}\"]")
+        return self.__get_instance(self.__selector + f"[{name}$=\"{value}\"]")
 
     def having_class_contains(self, class_name: str) -> Selector:
         return self.having_attribute_contains("class", class_name)
@@ -76,27 +76,27 @@ class Selector:
         return self.not_having_attribute_contains("class", class_name)
 
     def not_having_attribute_contains(self, name: str, value: str) -> Selector:
-        return self.get_instance(self.__selector + f":not([{name}*=\"{value}\"])")
+        return self.__get_instance(self.__selector + f":not([{name}*=\"{value}\"])")
 
     # Others...
 
     def nth_of_type(self, index: int) -> Selector:
-        return self.get_instance(self.__selector + f":nth-of-type({str(index)})")
+        return self.__get_instance(self.__selector + f":nth-of-type({str(index)})")
 
     def first(self) -> Selector:
-        return self.get_instance(self.__selector + ":first")
+        return self.__get_instance(self.__selector + ":first")
 
     def last(self) -> Selector:
-        return self.get_instance(self.__selector + ":last")
+        return self.__get_instance(self.__selector + ":last")
 
     def first_of_type(self) -> Selector:
-        return self.get_instance(self.__selector + ":first-of-type")
+        return self.__get_instance(self.__selector + ":first-of-type")
 
     def last_of_type(self) -> Selector:
-        return self.get_instance(self.__selector + ":last-of-type")
+        return self.__get_instance(self.__selector + ":last-of-type")
 
     def next_sibling(self) -> Selector:
-        return self.get_instance(self.__selector + "+")
+        return self.__get_instance(self.__selector + "+")
 
-    def get_instance(self, selector: str) -> Selector:
+    def __get_instance(self, selector: str) -> Selector:
         return Selector(selector)
