@@ -16,7 +16,8 @@ https://pypi.org/project/pipenv/
 With brew: `brew install pipenv`
 
 ### Set your Selenoid server
-Look for config `pytest.ini` or another config and set your Selenoid server host to GGR_PLAYBACK_HOST
+Look for config `pytest.ini` or another config and set your Selenoid server host to GGR_PLAYBACK_HOST  
+For example by: https://github.com/sakharovmaksim/my-local-selenoid
 
 ### Run your tests with Docker in easy way
 `bash run-tests-in-docker.sh --tests-dir=tests --config=pytest.ini`  
