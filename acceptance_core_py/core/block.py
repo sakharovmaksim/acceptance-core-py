@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 import logging
 from abc import ABC
+from typing import Optional
 
 from selenium.webdriver.remote.webelement import WebElement
 
-from acceptance_core_py.core.actions import driver_actions
+from acceptance_core_py.core.actions import driver_actions, waiting_actions
 from acceptance_core_py.core.selector import Selector
 
 
@@ -14,6 +17,7 @@ class Block(ABC):
     block_tag = None
     block_attribute_name = None
     block_attribute_value = None
+    custom_wait_timeout_in_sec: Optional[int] = None
 
     selector = Selector
 
@@ -53,3 +57,8 @@ class Block(ABC):
             logging.debug(f"Block do not have your own content selector, "
                           f"return 'context_selector': '{context_selector}'")
             return context_selector
+
+    def wait_for_ready(self) -> Block:
+        waiting_actions.wait_for_element_visible(
+            self.me, f"Could not waiting for visibility {self.__class__.__name__}", self.custom_wait_timeout_in_sec)
+        return self

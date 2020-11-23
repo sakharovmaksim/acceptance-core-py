@@ -1,7 +1,6 @@
 import logging
 import pathlib
 from pathlib import Path
-from typing import Optional
 
 from acceptance_core_py.core import driver
 from acceptance_core_py.core.actions import driver_actions
@@ -28,9 +27,9 @@ class ScreenshotActions:
             cls.__instance = ScreenshotActions()
         return cls.__instance
 
-    def capture_full_page_screenshot(self, screenshot_name_postfix: str = None) -> Optional[str]:
+    def capture_full_page_screenshot(self, screenshot_name_postfix: str = '') -> str:
         """Return uploaded screenshot URL in WebDav storage"""
-        screenshot_url = None
+        screenshot_url = ''
 
         screenshot_local_storage_data = self.create_screenshot_local_storage_data(screenshot_name_postfix)
         is_successfully_saved = self.create_and_save_screenshot_in_local(screenshot_local_storage_data)
@@ -46,11 +45,8 @@ class ScreenshotActions:
 
         pathlib.Path(dir_path_for_screenshot).mkdir(parents=True, exist_ok=True)
 
-        # Make full page screenshot (hacking)
-        window_width = int(driver_actions.execute_js('return window.innerWidth'))
-        page_height = int(driver_actions.execute_js('return document.body.scrollHeight'))
-        # Add a few pixels so that the picture is not cropped from the bottom
-        driver_actions.set_window_size(window_width, page_height + 250)
+        # Resize to full page for making screenshot
+        driver_actions.resize_window_to_full_page()
 
         logging.info(f"Saving screenshot in path: '{screenshot_path_with_file}'")
         status = driver.instance.save_screenshot(str(screenshot_path_with_file.absolute()))
@@ -61,7 +57,7 @@ class ScreenshotActions:
         logging.warning(f"Failed on saving screenshot in '{screenshot_path_with_file=}'")
         return False
 
-    def create_screenshot_local_storage_data(self, screenshot_name_postfix: str = None) -> ScreenshotLocalStorageData:
+    def create_screenshot_local_storage_data(self, screenshot_name_postfix: str = '') -> ScreenshotLocalStorageData:
         """Return local storage data for in future saved screenshot"""
         screenshot_local_storage_data = ScreenshotLocalStorageData()
 

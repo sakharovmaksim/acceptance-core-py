@@ -1,9 +1,11 @@
-class ATException(Exception):
-    def __init__(self, *args, **kwargs):
-        default_message = 'Exception in Acceptance Selenium framework'
+from acceptance_core_py.helpers import env
 
-        # if any arguments are passed...
-        if args or kwargs:
-            super().__init__(*args, **kwargs)
-        else:
-            super().__init__(default_message)
+
+class ATException(Exception):
+    """Acceptance Test exception"""
+    def __init__(self, message):
+        self.message = message
+        self.test_name = env.get_test_name_with_path()
+
+    def __str__(self):
+        return str(self.message) + f"\n From test: {self.test_name}" if self.test_name else ''

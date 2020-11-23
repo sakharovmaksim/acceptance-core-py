@@ -19,15 +19,22 @@ def get_waiting_default_timeout() -> int:
 def get_test_name() -> str:
     """Example: test_correctly_opening_public_page_organization"""
     test_name = os.environ.get('PYTEST_CURRENT_TEST').split(':')[-1].split(' ')[0]
-    logging.info(f"Got current test name: '{test_name}'")
+    logging.debug(f"Got current test name: '{test_name}'")
     return test_name
 
 
 def get_test_file_name() -> str:
     """Example: tests/test_correctly_opening_pages.py"""
     test_file_name = os.environ.get('PYTEST_CURRENT_TEST').split(':')[0]
-    logging.info(f"Got current test file name: '{test_file_name}'")
+    logging.debug(f"Got current test file name: '{test_file_name}'")
     return test_file_name
+
+
+def get_test_name_with_path() -> str:
+    """Return example: 'tests.main_page.test_auth_form.py.test_authorization_by_form'"""
+    result = get_test_file_name().replace('/', '.') + '.' + get_test_name()
+    logging.info(f"Generated test name with path '{result}'")
+    return result
 
 
 def is_need_send_metrics() -> bool:
@@ -39,6 +46,14 @@ def is_ui_test() -> bool:
     if os.environ.get(var):
         return not is_strings_equals(os.environ.get(var), 'False')
     return True
+
+
+def is_headless_mode() -> bool:
+    """Return is selenium headless mode is enable"""
+    var = 'HEADLESS_MODE'
+    if os.environ.get(var):
+        return os.environ.get(var) == "True"
+    return False
 
 
 # Data from GitLab CI

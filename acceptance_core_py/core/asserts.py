@@ -84,10 +84,10 @@ def assert_less_equal(actual, expected, comment_message: str = "Actual value is 
 
 
 def assert_regex(text, expected_regex, comment_message="Expected regex is not find in text"):
-    logging.info(f"Asserting that expected regex '{str(expected_regex)}' finded in text '{text}'")
+    logging.info(f"Asserting that expected regex '{str(expected_regex)}' found in text '{text}'")
     unittest.TestCase().assertRegex(text, expected_regex, comment_message)
 
 
 def assert_not_regex(text, unexpected_regex, comment_message="Expected regex is find in text. It's bad"):
-    logging.info(f"Asserting that unexpected regex '{str(unexpected_regex)}' finded in text '{text}'")
+    logging.info(f"Asserting that unexpected regex '{str(unexpected_regex)}' found in text '{text}'")
     unittest.TestCase().assertNotRegex(text, unexpected_regex, comment_message)

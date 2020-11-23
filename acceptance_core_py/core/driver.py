@@ -45,7 +45,10 @@ def initialize() -> WebDriver:
     # https://stackoverflow.com/questions/56111529/cannot-call-non-w3c-standard-command-while-in-w3c-mode-seleniumwebdrivererr
     chrome_options.add_experimental_option('w3c', False)
 
-    chrome_options.add_argument("start-maximized")
+    if env.is_headless_mode():
+        logging.info("Enabling 'headless mode' for browser instance")
+        chrome_options.headless = True
+    chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument("disable-infobars")
     chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument("--disable-notifications")

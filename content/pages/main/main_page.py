@@ -1,20 +1,12 @@
 from __future__ import annotations
 
 from acceptance_core_py.core.actions import waiting_actions
-from content.blocks.header_menu.header_menu_block import HeaderMenuBlock
-from content.blocks.title.title_block import TitleBlock
+from content.blocks.desktop.header_menu.header_menu_block import HeaderMenuBlock
 from content.pages.base_page import BasePage
 
 
 class MainPage(BasePage):
-    __title_block = None
     __header_menu_block = None
-
-    @property
-    def title_block(self) -> TitleBlock:
-        if self.__title_block is None:
-            self.__title_block = TitleBlock()
-        return self.__title_block
 
     @property
     def header_menu_block(self) -> HeaderMenuBlock:

@@ -1,4 +1,4 @@
-"""Block of abstract button in project"""
+"""Block of any button in project"""
 
 from acceptance_core_py.core.actions import driver_actions
 from acceptance_core_py.core.block import Block

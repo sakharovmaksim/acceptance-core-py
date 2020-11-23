@@ -1,13 +1,17 @@
+import pytest
+
 from acceptance_core_py.core.actions import driver_actions
-from acceptance_core_py.core.asserts import assert_strings_pattern
-from content.openers.main.main_page_opener import MainPageOpener
+from acceptance_core_py.core.asserts import assert_not_equal
+from content.pages.main.main_page_mobile import MainPageMobile
+from content.url_builders.main.main_page_url_builder import MainPageUrlBuilder
 
 
+@pytest.mark.mobile
 class TestSampleMobileClass:
     def test_mobile_simple_example_1(self):
         """Example of page opener test with capture screenshot"""
-        mobile_main_page = MainPageOpener().open_mobile_main_page()
+        mobile_main_page = MainPageMobile().open_me(MainPageUrlBuilder())
         driver_actions.add_cookie_to_domain("hide_popups", "true")
 
-        title_text = mobile_main_page.title_block.get_title_text()
-        assert_strings_pattern(needle="Бутик", haystack=title_text, comment_message="Title is not valid")
+        header_cart_text = mobile_main_page.header_cart_block.get_text()
+        assert_not_equal('bad cart', header_cart_text, 'Header Cart text must be not empty')

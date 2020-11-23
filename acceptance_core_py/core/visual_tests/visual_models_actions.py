@@ -17,6 +17,8 @@ class VisualModelsActions:
     __instance = None
 
     __references_dir_name_in_webdav = 'acceptance-visual-models'
+    __created_reference_model_webdav_url: Optional[str] = None
+    __created_candidate_model_webdav_url: Optional[str] = None
 
     def __init__(self):
         pass
@@ -26,6 +28,14 @@ class VisualModelsActions:
         if not cls.__instance:
             cls.__instance = VisualModelsActions()
         return cls.__instance
+
+    def get_latest_reference_model_webdav_url(self) -> Optional[str]:
+        """Return latest created reference model url in WebDav"""
+        return self.__created_reference_model_webdav_url
+
+    def get_latest_candidate_model_webdav_url(self) -> Optional[str]:
+        """Return latest created candidate model url in WebDav"""
+        return self.__created_candidate_model_webdav_url
 
     def get_reference_publishing_cloud_url(self, force_gitlab_master_branch: bool = False) -> str:
         """Generate and get future uploaded screenshot url in WebDav"""
@@ -55,7 +65,8 @@ class VisualModelsActions:
             self.__crop_by_element(screenshot_local_storage_data.full_local_screenshot_path, element)
 
             webdav_client = WebDavClient(self.__references_dir_name_in_webdav)
-            webdav_client.publish_screenshot(screenshot_local_storage_data)
+            reference_url = webdav_client.publish_screenshot(screenshot_local_storage_data)
+            self.__created_reference_model_webdav_url = reference_url
             return True
         return False
 
@@ -69,7 +80,8 @@ class VisualModelsActions:
         if is_successfully_saved:
             screenshot_local_path = screenshot_local_storage_data.full_local_screenshot_path
             self.__crop_by_element(screenshot_local_path, element)
-            WebDavClient().publish_screenshot(screenshot_local_storage_data)
+            candidate_url = WebDavClient().publish_screenshot(screenshot_local_storage_data)
+            self.__created_candidate_model_webdav_url = candidate_url
             return screenshot_local_path
         return None
 
@@ -85,11 +97,13 @@ class VisualModelsActions:
         if not WebDavClient().download_file(reference_model_cloud_url, reference_local_model_data):
             logging.info(f"Could not download reference visual model from {reference_model_cloud_url=}. "
                          "Let's try download master reference model")
-            reference_model_cloud_master_url = self.get_reference_publishing_cloud_url(force_gitlab_master_branch=True)
+            reference_model_cloud_url = self.get_reference_publishing_cloud_url(force_gitlab_master_branch=True)
 
-            if not WebDavClient().download_file(reference_model_cloud_master_url, reference_local_model_data):
+            if not WebDavClient().download_file(reference_model_cloud_url, reference_local_model_data):
                 logging.warning(f"Could not download master reference visual model from {reference_model_cloud_url=}")
                 return False
+
+        self.__created_reference_model_webdav_url = reference_model_cloud_url
         return True
 
     def __crop_by_element(self, screenshot_local_path: Path, element: WebElement):

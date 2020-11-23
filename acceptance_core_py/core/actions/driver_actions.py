@@ -1,10 +1,10 @@
 import logging
 import time
+from selenium.webdriver.common.by import By
 from time import sleep
-from urllib.parse import urlparse
 
 import tldextract
-from typing import List
+from typing import List, Dict, Set
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver import TouchActions, ActionChains
@@ -14,7 +14,7 @@ from selenium.webdriver.support.select import Select
 
 from acceptance_core_py.core import driver
 from acceptance_core_py.core.actions import waiting_actions
-from acceptance_core_py.core.exception.at_exception import ATException
+from acceptance_core_py.core.exception.ac_exception import ACException
 from acceptance_core_py.core.selector import Selector
 from acceptance_core_py.helpers import env
 from acceptance_core_py.helpers.utils import strings_utils
@@ -54,12 +54,18 @@ def focus(selector: Selector):
     execute_js(get_dom_object(selector, "focus()"))
 
 
+def scroll_into_view(css_selector: Selector, need_wait: bool = False):
+    logging.info(f"Scrolling to selector {str(css_selector)}")
+    execute_js(get_dom_object(css_selector, "scrollIntoView()"))
+    if need_wait:
+        waiting_actions.sleep(1)
+
+
 # Select methods
 
 def select_by_value(selector: Selector,
                     value: str,
                     clear_inline_css_display: bool):
-    """TODO Test me before usage"""
     logging.info(f"Select option with value {value} for selector '{selector}'")
     element = locate_element(selector)
 
@@ -73,15 +79,8 @@ def select_by_value(selector: Selector,
 
 # Openers methods
 
-def open_relative_url_using_base_url(relative_url: str = ""):
-    opened_url = env.get_base_url() + relative_url
-    logging.info(f"Opening URL '{opened_url}'")
-    driver.instance.get(opened_url)
-    waiting_actions.wait_for_load()
-
-
 def open_relative_url_using_current_url(relative_url: str = ""):
-    # Delete '/' from example url 'https://ct242.nn.zoon.dev/', change to 'https://ct242.nn.zoon.dev'
+    # Delete '/' from example url 'https://your-host.ru/', change to 'https://your-host.ru'
     opened_url = get_url().rstrip('/') + relative_url
     logging.info(f"Opening URL '{opened_url}'")
     driver.instance.get(opened_url)
@@ -91,14 +90,6 @@ def open_relative_url_using_current_url(relative_url: str = ""):
 def open_direct_url(url: str):
     logging.info(f"Opening direct URL '{url}'")
     driver.instance.get(url)
-    waiting_actions.wait_for_load()
-
-
-def open_subdomain_url(subdomain: str):
-    parsed_url = urlparse(env.get_base_url())
-    generated_url = f"{parsed_url.scheme}://{subdomain}.{parsed_url.netloc}"
-    logging.info(f"Opening subdomain with URL '{generated_url}'")
-    driver.instance.get(generated_url)
     waiting_actions.wait_for_load()
 
 
@@ -121,7 +112,7 @@ def grab_text_from_hidden_element(selector: Selector) -> str:
     return grabbed_text
 
 
-def grab_text_from_hidden_elements(selector: Selector) -> List:
+def grab_text_from_elements(selector: Selector) -> List:
     result = list()
     i = 0
     for element in locate_elements(selector):
@@ -163,11 +154,22 @@ def get_attr_value_from_element(selector: Selector, attr_name: str) -> str:
 def input_in_field(selector: Selector,
                    string_to_input: str,
                    need_check_for_correctly_input: bool = True,
-                   need_click_by_html: bool = False):
+                   need_click_by_html: bool = False,
+                   need_clear_field_with_keyboard: bool = False):
     click_by_html(selector) if need_click_by_html else click(selector)
-    clear_field(selector)
+    clear_field_with_keyboard(selector) if need_clear_field_with_keyboard else clear_field(selector)
     logging.info(f"Inputting string '{string_to_input}' in field with selector '{selector}'")
     send_chars(selector=selector, chars=string_to_input, need_check_for_correctly_input=need_check_for_correctly_input)
+
+
+def input_in_field_by_char(selector: Selector,
+                           string_to_input: str,
+                           need_click_by_html: bool = False):
+    """Input string to field by char without check for correctly input"""
+    click_by_html(selector) if need_click_by_html else click(selector)
+    clear_field(selector)
+    logging.info(f"Inputting string '{string_to_input}' in field with selector '{selector}' by char")
+    send_chars_by_char(selector=selector, chars=string_to_input)
 
 
 def send_chars(selector: Selector, chars: str, need_check_for_correctly_input: bool = True):
@@ -257,24 +259,30 @@ def add_cookie_to_domain(name: str, value: str, domain: str = None):
     driver.instance.add_cookie({'name': name, 'value': value, 'domain': domain})
 
     if not get_cookie_with_name(name):
-        raise ATException(f"Could not set cookie with name '{name}' for domain '{domain}'")
+        raise ACException(f"Could not set cookie with name '{name}' for domain '{domain}'")
 
 
-def get_all_cookies() -> dict:
-    logging.info(f"Get all cookies")
+def get_all_cookies() -> Set[Dict]:
+    logging.info('Get all cookies')
     return driver.instance.get_cookies()
 
 
-def get_cookie_with_name(cookie_name: str) -> dict:
-    logging.info(f"Get cookie with name '{cookie_name}'")
+def get_cookie_with_name(cookie_name: str) -> Dict:
+    logging.info(f"Getting cookie with '{cookie_name=}'")
     return driver.instance.get_cookie(cookie_name)
 
 
-def delete_cookie(name: str):
-    logging.info(f"Deleting cookie with name '{name}'")
-    driver.instance.delete_cookie(name)
-    if get_cookie_with_name(name):
-        raise ATException(f"Could not delete cookie with name '{name}'")
+def delete_cookie(name: str, max_attempts: int = 3):
+    logging.info(f"Deleting cookie with {name=}")
+
+    adapted_max_attempts = max_attempts + 1
+    for attempt, _ in enumerate(range(adapted_max_attempts), 1):
+        driver.instance.delete_cookie(name)
+        if get_cookie_with_name(name):
+            logging.warning(f'Could not deleted cookie with {name=} in {attempt=}')
+            continue
+        return
+    raise ACException(f"Could not delete cookie with {name=} for {adapted_max_attempts} attempts")
 
 
 def clear_all_cookies():
@@ -302,17 +310,17 @@ def get_elements_count(css_selector: Selector) -> int:
 
 def locate_element(css_selector: Selector) -> WebElement:
     try:
-        return driver.instance.find_element_by_css_selector(str(css_selector))
+        return driver.instance.find_element(by=By.CSS_SELECTOR, value=str(css_selector))
     except NoSuchElementException:
-        raise ATException(f"Can not find selector: '{css_selector}'. "
+        raise ACException(f"Can not find selector: '{css_selector}'. "
                           f"For information, at this time only CSS selectors allowed.")
 
 
 def locate_elements(css_selector: Selector) -> List[WebElement]:
     try:
-        return driver.instance.find_elements_by_css_selector(str(css_selector))
+        return driver.instance.find_elements(by=By.CSS_SELECTOR, value=str(css_selector))
     except NoSuchElementException:
-        raise ATException(f"Can not find selector: '{css_selector}'. "
+        raise ACException(f"Can not find selector: '{css_selector}'. "
                           f"For information, at this time only CSS selectors allowed.")
 
 
@@ -385,7 +393,7 @@ def switch_to_next_window() -> bool:
         time.sleep(1)
         try_count += 1
 
-    raise ATException(f"Could not switch to a new tab/windows for {timeout} seconds.")
+    raise ACException(f"Could not switch to a new tab/windows for {timeout} seconds.")
 
 
 def switch_to_first_window():
@@ -412,6 +420,17 @@ def set_window_size(window_width: int, page_height: int):
     driver.instance.set_window_size(window_width, page_height)
 
 
+def resize_window_to_full_page():
+    """Resize window to full page size"""
+    window_width = int(execute_js('return window.innerWidth'))
+    page_height = int(execute_js('return document.body.scrollHeight'))
+    # Add a few pixels so that the picture is not cropped from the bottom
+    set_window_size(window_width, page_height + 250)
+    # Some processes can be executing after resize, waiting for then
+    waiting_actions.wait_for_ajax()
+    waiting_actions.wait_for_load()
+
+
 # Executing JS methods
 
 def get_dom_object(css_selector: Selector, property_or_method_to_execute: str = None) -> str:
@@ -421,3 +440,27 @@ def get_dom_object(css_selector: Selector, property_or_method_to_execute: str = 
 
 def execute_js(js: str, *args):
     return driver.instance.execute_script(js, args)
+
+
+def execute_async_script(js):
+    return driver.instance.execute_async_script(js)
+
+
+# Alert methods
+
+def accept_alert():
+    logging.info("Accept alert")
+    alert_obj = driver.instance.switch_to.alert
+    alert_obj.accept()
+
+
+def dismiss_alert():
+    logging.info("Dismiss alert")
+    alert_obj = driver.instance.switch_to.alert
+    alert_obj.dismiss()
+
+
+def input_text_in_alert(text: str):
+    logging.info(f"Enter '{text}' in the alert text box")
+    alert_obj = driver.instance.switch_to.alert
+    alert_obj.send_keys(text)

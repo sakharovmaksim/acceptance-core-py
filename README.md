@@ -51,7 +51,7 @@ Default for docker-script
 `-max-runs=X` in pytest.ini file
 
 ## Mobile emulation
-For setting up mobile emulation use MobileTestCase for this tests
+For setting up mobile emulation use @pytest.mark.mobile fixture for test method or class
 
 # Visual models tests
 Create visual models references. Run in reference mode `pipenv run pytest visual_tests -c visual_tests/pytest-reference-dev.ini`  
