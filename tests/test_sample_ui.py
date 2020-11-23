@@ -7,7 +7,7 @@ from content.url_builders.main.main_page_url_builder import MainPageUrlBuilder
 
 class TestSampleClass:
     def test_simple_example_1(self):
-        """Example of page opener test with capture screenshot"""
+        """Example of desktop page test"""
         main_page = MainPage().open_me(MainPageUrlBuilder())
         driver_actions.add_cookie_to_domain("hide_popups", "true")
         header_menu_block = main_page.header_menu_block

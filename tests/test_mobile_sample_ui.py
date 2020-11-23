@@ -9,7 +9,7 @@ from content.url_builders.main.main_page_url_builder import MainPageUrlBuilder
 @pytest.mark.mobile
 class TestSampleMobileClass:
     def test_mobile_simple_example_1(self):
-        """Example of page opener test with capture screenshot"""
+        """Example of mobile page test"""
         mobile_main_page = MainPageMobile().open_me(MainPageUrlBuilder())
         driver_actions.add_cookie_to_domain("hide_popups", "true")
 

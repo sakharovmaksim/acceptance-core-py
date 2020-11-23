@@ -16,7 +16,7 @@ https://pypi.org/project/pipenv/
 With brew: `brew install pipenv`
 
 ### Set your Selenoid server
-Look for config pytest.ini and set your Selenoid server to GGR_PLAYBACK_HOST
+Look for config `pytest.ini` or another config and set your Selenoid server host to GGR_PLAYBACK_HOST
 
 ### Run your tests with Docker in easy way
 `sh run_tests_in_docker.sh pytest.ini`
@@ -51,7 +51,7 @@ Default for docker-script
 `-max-runs=X` in pytest.ini file
 
 ## Mobile emulation
-For setting up mobile emulation use @pytest.mark.mobile fixture for test method or class
+For setting up mobile emulation use `@pytest.mark.mobile` fixture for test method or class
 
 # Visual models tests
 Create visual models references. Run in reference mode `pipenv run pytest visual_tests -c visual_tests/pytest-reference-dev.ini`  
