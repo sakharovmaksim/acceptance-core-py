@@ -50,7 +50,7 @@ class Block(ABC):
         elif self.block_id:
             return context_selector.child_by_id(self.block_id)
         elif self.block_tag:
-            return context_selector.child_by_tag(self.block_tag)
+            return context_selector.child_by_tag(self.block_tag, direct_child=False)
         elif self.block_attribute_name and self.block_attribute_value:
             return context_selector.child_by_attribute(self.block_attribute_name, self.block_attribute_value)
         else:
