@@ -37,6 +37,7 @@ docker pull $TAG
 
 docker run -di --net=host --name=$CONTAINER_NAME -v "$pwd":/acceptance-tests-core-dir $TAG
 
+docker exec $CONTAINER_NAME pipenv install
 # Запуск тестов из папки, в которой предустановлены модули Python. Установлена опция --html формирования HTML-отчета (можно выключить)
 docker exec $CONTAINER_NAME pipenv run pytest /acceptance-tests-core-dir/$TESTS_DIR \
       --html=/acceptance-tests-core-dir/output/report.html --self-contained-html \
