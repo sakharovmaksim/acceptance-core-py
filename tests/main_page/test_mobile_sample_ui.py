@@ -14,4 +14,6 @@ class TestSampleMobileClass:
         driver_actions.add_cookie_to_domain("hide_popups", "true")
 
         header_cart_text = mobile_main_page.header_cart_block.get_text()
-        assert_not_equal('bad cart', header_cart_text, 'Header Cart text must be not empty')
+        assert_not_equal(
+            "bad cart", header_cart_text, "Header Cart text must be not empty"
+        )

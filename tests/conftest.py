@@ -1,17 +1,14 @@
-import os
-import pytest
 import logging
+import os
 
-from _pytest.fixtures import FixtureRequest
+import pytest
 
 from acceptance_core_py.core import driver
-from acceptance_core_py.core.actions import driver_actions
-from acceptance_core_py.helpers import env
+from testing_projects_common.conftest.conftest_utils import send_finished_test_metrics
 
 
 def pytest_configure(config):
-    config.addinivalue_line('markers', 'mobile: initialize selenium with mobile mode')
-    config.addinivalue_line('markers', 'no_ui: not start selenium')
+    config.addinivalue_line("markers", "mobile: initialize selenium with mobile mode")
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -29,39 +26,36 @@ def pytest_runtest_makereport(item, call):
 @pytest.fixture(autouse=True)
 def run_test(request):
     driver.mobile_mode = False
-    need_selenium_driver_initialize = True
 
-    if request.node.get_closest_marker('mobile'):
+    if request.node.get_closest_marker("mobile"):
         driver.mobile_mode = True
-    if request.node.get_closest_marker('no_ui'):
-        os.environ['IS_UI_TEST'] = 'False'
-        need_selenium_driver_initialize = False
 
-    if need_selenium_driver_initialize:
-        driver.initialize()
+    driver.initialize()
 
-    # Test running here
+    # Запуск теста
     yield
 
-    # For good test exit by CTRL+C check attr 'rep_call' exists in request.node
-    if hasattr(request.node, 'rep_call') and request.node.rep_call.failed:
-        take_test_screenshot_and_send_metrics(request)
+    send_finished_test_metrics(request)
 
-    if need_selenium_driver_initialize:
-        driver.close_driver()
+    driver.close_driver()
 
 
-def take_test_screenshot_and_send_metrics(request: FixtureRequest):
-    """Add your mechanism capturing screenshot and test metrics sender"""
-    screenshot_url = ''
-    if env.is_ui_test():
-        logging.warning("--- Capturing failed page screenshot and saving some metrics and artifacts ---")
-        # screenshot_url = ScreenshotActions.get_instance().capture_full_page_screenshot("FAILED")
+@pytest.fixture()
+def enable_reference_mode():
+    """Using in pytest-X.ini"""
+    logging.info("Enabling reference mode for visual tests")
+    os.environ["REFERENCE_MODE"] = "1"
 
-        final_url = driver_actions.get_url()
-        logging.warning(f"--- Failed test final URL is: '{final_url}'")
 
-    # if env.is_need_send_metrics():
-    #     PrometheusClient.get_instance().push_test_failed_metric_to_gateway()
-    #     SentryClient.get_instance().set_screenshot_url(screenshot_url).capture_exception(request.node.exception)
+@pytest.fixture()
+def enable_testing_mode():
+    """Using in pytest-X.ini"""
+    logging.info("Enabling testing mode for visual tests")
+    os.environ["TESTING_MODE"] = "1"
 
+
+@pytest.fixture()
+def enable_developer_mode(enable_reference_mode, enable_testing_mode):
+    logging.info("Enabling developer mode for visual tests")
+    enable_reference_mode
+    enable_testing_mode

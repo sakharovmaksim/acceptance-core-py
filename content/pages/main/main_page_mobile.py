@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from acceptance_core_py.core.actions import waiting_actions
 from content.blocks.mobile.header_cart_block import HeaderCartBlock
-from content.pages.base_page import BasePage
+from testing_projects_common.pages.base_page import BasePage
 
 
 class MainPageMobile(BasePage):
@@ -16,5 +16,8 @@ class MainPageMobile(BasePage):
 
     def wait_for_ready(self):
         waiting_actions.wait_for_load()
-        waiting_actions.wait_for_element_visible(self.header_cart_block.me,
-                                                 'Could not waiting for Header Cart block visible', 10)
+        waiting_actions.wait_for_element_visible(
+            self.header_cart_block.me,
+            "Could not waiting for Header Cart block visible",
+            10,
+        )

@@ -1,5 +1,6 @@
 class ACException(Exception):
     """Acceptance Core exception"""
+
     def __init__(self, message):
         self.message = message
 

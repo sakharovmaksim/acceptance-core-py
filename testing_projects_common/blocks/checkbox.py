@@ -1,10 +1,10 @@
-"""Block of any button in project"""
-
 from acceptance_core_py.core.actions import driver_actions
-from acceptance_core_py.core.block import Block
+from testing_projects_common.blocks.base_block import BaseBlock
 
 
-class Button(Block):
+class Checkbox(BaseBlock):
+    """Чекбокс. Квадратик с галочкой такой :)"""
+
     def click(self):
         driver_actions.click(self.me)
 

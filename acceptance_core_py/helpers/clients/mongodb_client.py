@@ -5,9 +5,10 @@ from pymongo import MongoClient
 
 class MongoDbClient:
     """Attention: Singleton object, use by MongodbClient.get_instance().get_collection()"""
+
     __instance = None
     __client = None
-    __mongo_host = '127.0.0.1'
+    __mongo_host = "127.0.0.1"
     __mongo_port = 27017
 
     def __init__(self):
@@ -32,7 +33,7 @@ class MongoDbClient:
         logging.info(f"Getting a Database '{db}' from MongoDB")
         return client[db]
 
-    def get_collection(self, collection: str, db: str = 'test') -> MongoClient:
+    def get_collection(self, collection: str, db: str = "test") -> MongoClient:
         db = self.get_db(db)
         logging.info(f"Getting from a Database '{str(db)}' Collection '{collection}'")
         return db[collection]

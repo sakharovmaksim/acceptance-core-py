@@ -7,11 +7,12 @@ from MySQLdb.cursors import Cursor
 
 class MySQLDbClient:
     """Attention: Singleton object, use by MySQLDbClient.get_instance().select_one_from_table()"""
+
     # Read documentation https://mysqlclient.readthedocs.io/user_guide.html
     __instance = None
     __db_cursor = None
     __connect = None
-    __mysql_host = '127.0.0.1'
+    __mysql_host = "127.0.0.1"
 
     def __init__(self):
         pass
@@ -23,10 +24,10 @@ class MySQLDbClient:
             cls.__instance = MySQLDbClient()
         return cls.__instance
 
-    def get_db_cursor(self, db: str = 'test') -> Cursor:
+    def get_db_cursor(self, db: str = "test") -> Cursor:
         if self.__db_cursor:
             return self.__db_cursor
-        db = MySQLdb.connect(host=self.__mysql_host, db=db, user='root')
+        db = MySQLdb.connect(host=self.__mysql_host, db=db, user="root")
         self.__connect = db
         self.__db_cursor = db.cursor(MySQLdb.cursors.DictCursor)
         return self.__db_cursor

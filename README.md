@@ -1,7 +1,7 @@
 # Acceptance Tests framework sample. Powered by Python and Selenium.
 =================================================
 ## Requirements
-Python 3.8+
+Python 3.9+
 
 ## Install for MacOS
 ### Install Python 3
@@ -11,21 +11,36 @@ https://www.python.org/downloads/
 https://pip.pypa.io/en/stable/installing/#installing-with-get-pip-py
 
 ### Install pipenv
-https://pypi.org/project/pipenv/  
+https://pypi.org/project/pipenv/
 
 With brew: `brew install pipenv`
 
 ### Set your Selenoid server
-Look for config `pytest.ini` or another config and set your Selenoid server host to GGR_PLAYBACK_HOST  
+Look for config `pytest.ini` or another config and set your Selenoid server host to GGR_PLAYBACK_HOST
 For example by: https://github.com/sakharovmaksim/my-local-selenoid
 
+## Для pre-commit проверок установи pre-commit
+1. Для Linux `pip install pre-commit` или для Mac `brew install pre-commit`
+
+2. Ты должен выполнить `pipenv install` до или сделай это прямо сейчас;
+
+3. Установи git-хуки в свою .git-папку:
+`pre-commit install`
+Удали `rm .git/hooks/pre-commit.legacy` если этот хук был создан предыдущей командой
+
+4. Запустить принудительную проверку всех файлов в проекте:
+`pre-commit run --all-files`
+
+5. Запустить проверку только для измененных файлов (нужен git add --all):
+`pre-commit run`
+
 ### Run your tests with Docker in easy way
-`bash run-tests-in-docker.sh --tests-dir=tests --config=pytest.ini`  
-or simply  
-`bash run-tests-in-docker.sh --config=pytest.ini` with default dir with tests
+`bash run-tests-in-docker.sh --tests-dir=tests --config=pytest-dev.ini`
+or simply
+`bash run-tests-in-docker.sh --config=pytest-dev.ini` with default dir with tests
 
 ### Run your tests with local Python
-`pipenv run pytest tests -c tests/pytest.ini` – with config `pytest.ini`
+`pipenv run pytest tests -c tests/pytest-dev.ini` – with config `pytest-dev.ini`
 
 ### Run your tests with parallel mode
 Change in *.ini-file `addopts = -nX` option for desired count of parallel tests
@@ -57,5 +72,10 @@ Default for docker-script
 For setting up mobile emulation use `@pytest.mark.mobile` fixture for test method or class
 
 # Visual models tests
-Create visual models references. Run in reference mode `pipenv run pytest visual_tests -c visual_tests/pytest-reference-dev.ini`  
-Test visual models candidates. Run in testing mode `pipenv run pytest visual_tests -c visual_tests/pytest-testing-dev.ini`
+Create visual models references. Run in reference mode `pipenv run pytest tests -c tests/pytest-reference-dev.ini`
+Test visual models candidates. Run in testing mode `pipenv run pytest tests -c tests/pytest-testing-dev.ini`
+
+## Формирование Allure-отчета
+1. Установить allure serve для локальной генерации отчета: https://docs.qameta.io/allure/#_installing_a_commandline
+2. После выполнения тестов выполнить: `allure serve output/allure-results/`
+3. В CI/CD изпользуй Allure Service и транспорт до него
